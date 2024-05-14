@@ -1,5 +1,6 @@
-from .models import AccelerometerInf,LocationInf,BlueToothInf
+from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,3 +58,36 @@ class AccSerializer(serializers.ModelSerializer):
     acc_z=serializers.FloatField(
         required=True
     )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "username",
+            "password",
+            "email",
+            "device"
+        ]
+
+    def create(self, validated_data: dict) -> CustomUser:
+        #密码单独拿出来，因为需要加密后才能存在数据库
+        password = validated_data.pop("password")
+        #创建实例user
+        user = get_user_model().objects.create_user(**validated_data)
+        #加密
+        user.set_password(password)
+        user.save()
+        return user
+
+class UserLoginSerializer(serializers.Serializer):
+
+    username = serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    password = serializers.CharField(
+        max_length=128,
+        required=True
+    )
+

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 
 class LocationInf(models.Model):
     longitude = models.FloatField(
@@ -34,3 +34,6 @@ class AccelerometerInf(models.Model):
         max_length=150,
         default=""
     )
+
+class CustomUser(AbstractUser):
+    device = models.CharField(max_length=150, default="")

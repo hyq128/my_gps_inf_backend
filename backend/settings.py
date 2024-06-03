@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import psycopg2
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-3muio4&!2x91*a1eds5k2w@u%=r*7pzm3o6c62$+&z^h+=l=&a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "gps.primedigitaltech.com",
+]
 
 
 # Application definition
@@ -103,9 +105,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': "django.db.backends.postgresql",
-            'NAME': 'osdb',
-            'USER': 'osdb',
-            'PASSWORD': 'osdb',
+            'NAME': 'gps',
+            'USER': 'gps',
+            'PASSWORD': 'gps',
             'HOST': '127.0.0.1',
             'PORT': 5432,
         }
@@ -146,7 +148,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -155,3 +157,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from base.cors import *
 AUTH_USER_MODEL = 'account.CustomUser'
+
+STATIC_ROOT = '/home/xyc/snap/snapd-desktop-integration/83/桌面/deploy/gps_inf/static'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'None'

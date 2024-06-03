@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 
 class UpdateLocationApi(APIView):
@@ -94,11 +95,17 @@ class UserRegisterApi(APIView):
         
 class UserLoginApi(APIView):
     permission_classes = []
+
     def post(self, request: Request) -> Response:
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = get_user_model().objects.get(username=serializer.validated_data["username"])
+        
+        try:
+            user = get_user_model().objects.get(username=serializer.validated_data["username"])
+        except ObjectDoesNotExist:
+            return Response({"message": "用户未注册"}, status=status.HTTP_400_BAD_REQUEST)
+        
         if user.check_password(serializer.validated_data["password"]):
-                return Response({"message": "用户登录成功"})
+            return Response({"message": "用户登录成功"})
         else:
-             return Response({"message": "用户登录失败，请检查您的账号密码"})
+            return Response({"message": "用户登录失败，请检查您的账号密码"})

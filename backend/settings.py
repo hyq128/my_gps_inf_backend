@@ -45,6 +45,8 @@ LOCAL_APPS = [
 
 THIRD_PARTY_APPS = [
     'corsheaders',
+    'rest_framework_simplejwt',
+    'rest_framework',
 ]
 
 INSTALLED_APPS = [
@@ -156,6 +158,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from base.cors import *
+from base.rest_framework import *
+from base.simplejwt import *
 AUTH_USER_MODEL = 'account.CustomUser'
 
 STATIC_ROOT = '/home/xyc/snap/snapd-desktop-integration/83/桌面/deploy/gps_inf/static'

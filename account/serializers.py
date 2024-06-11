@@ -1,6 +1,9 @@
 from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -91,3 +94,11 @@ class UserLoginSerializer(serializers.Serializer):
         required=True
     )
 
+
+
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         token['username'] = user.name
+#         return token

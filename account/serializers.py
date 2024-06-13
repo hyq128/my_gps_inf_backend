@@ -8,12 +8,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationInf
-        fields = ['device', 'longitude', 'latitude']
+        fields = ['longitude', 'latitude','timestamp']
 
-    device = serializers.CharField(
-        max_length=150,
-        required=True
-    )
     
     longitude = serializers.FloatField(
         required=True
@@ -23,32 +19,25 @@ class LocationSerializer(serializers.ModelSerializer):
         required=True
     )
 
+    timestamp = serializers.DateTimeField()
 
 class BlueToothSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlueToothInf
-        fields = ['device', 'connection_device']
-
-    device = serializers.CharField(
-        max_length=150,
-        required=True
-    )
+        fields = ['connection_device','timestamp']
     
     connection_device = serializers.CharField(
         max_length=150,
         required=True
     )
 
+    timestamp = serializers.DateTimeField()
+
     
 class AccSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccelerometerInf
-        fields = ['device', 'acc_x', 'acc_y','acc_z']
-
-    device = serializers.CharField(
-        max_length=150,
-        required=True
-    )
+        fields = ['acc_x', 'acc_y','acc_z','timestamp']
     
     acc_x=serializers.FloatField(
         required=True
@@ -61,6 +50,8 @@ class AccSerializer(serializers.ModelSerializer):
     acc_z=serializers.FloatField(
         required=True
     )
+
+    timestamp = serializers.DateTimeField()
 
 
 class UserSerializer(serializers.ModelSerializer):

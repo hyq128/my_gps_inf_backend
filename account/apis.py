@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class UpdateLocationApi(APIView):
+    permission_classes = []
     def post(self,request):
         serializer = LocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -29,6 +30,7 @@ class UpdateLocationApi(APIView):
         return Response({"message": "Data saved successfully."})
 
 class UpdateBTApi(APIView):
+    permission_classes = []
     def post(self,request):
         serializer = BlueToothSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,6 +44,7 @@ class UpdateBTApi(APIView):
 
 
 class UpdateACCApi(APIView):
+    permission_classes = []
     def post(self,request):
         serializer = AccSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -57,7 +60,28 @@ class UpdateACCApi(APIView):
 
 
 
-class GetUserData(APIView):
+class GetACCData(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        if username:
+            # 获取用户对象，如果不存在则返回404
+            user = get_object_or_404(CustomUser, username=username)
+            # 获取用户的设备信息
+            device = user.device
+            # 获取与设备相关的加速计信息
+            accs = AccelerometerInf.objects.filter(device=device)
+            acc_serializer = AccSerializer(accs, many=True)
+            # 返回数据
+            return Response({
+                'username':username,
+                'device':device,
+                'accelerometers': acc_serializer.data,
+            })
+        else:
+            return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetGPSData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         username = request.user.username
@@ -69,20 +93,34 @@ class GetUserData(APIView):
             # 获取与设备相关的位置信息
             locations = LocationInf.objects.filter(device=device)
             location_serializer = LocationSerializer(locations, many=True)
-            # 获取与设备相关的蓝牙信息
-            bluetooths = BlueToothInf.objects.filter(device=device)
-            bluetooth_serializer = BlueToothSerializer(bluetooths, many=True)
-            
-            # 获取与设备相关的加速计信息
-            accs = AccelerometerInf.objects.filter(device=device)
-            acc_serializer = AccSerializer(accs, many=True)
-            
             # 返回数据
             return Response({
                 'username':username,
-                'locations': location_serializer.data,
+                'device':device,
+                'Locations':location_serializer.data,
+            })
+        else:
+            return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetBTData(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        if username:
+            # 获取用户对象，如果不存在则返回404
+            user = get_object_or_404(CustomUser, username=username)
+            # 获取用户的设备信息
+            device = user.device
+            # 获取与设备相关的蓝牙信息
+            bluetooths = BlueToothInf.objects.filter(device=device)
+            bluetooth_serializer = BlueToothSerializer(bluetooths, many=True)
+
+            # 返回数据
+            return Response({
+                'username':username,
+                'device':device,
                 'bluetooths': bluetooth_serializer.data,
-                'accelerometers': acc_serializer.data
             })
         else:
             return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)

@@ -14,7 +14,7 @@ class CustomUserAdmin(DjangoUserAdmin):
     """Add additional fields to user admin page."""
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("email","device")}),
+        (_("Personal info"), {"fields": ("email","device","phone_number","gender")}),
         (
             _("Permissions"),
             {

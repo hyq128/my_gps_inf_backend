@@ -61,7 +61,8 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "password",
             "email",
-            "device"
+            "device",
+            "phone_number",
         ]
 
     def create(self, validated_data: dict) -> CustomUser:
@@ -85,7 +86,28 @@ class UserLoginSerializer(serializers.Serializer):
         required=True
     )
 
+# 找回密码
+class IsPasswordSerializer(serializers.Serializer):
+    email=serializers.CharField(
+       required=True
+    )
+    username = serializers.CharField(
+        max_length=150,
+        required=True
+    )
 
+class ResetSerializer(serializers.Serializer):
+    token=serializers.CharField(
+        required=True
+    )
+    username = serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    password= serializers.CharField(
+        max_length=128,
+        required=True
+    )
 
 # class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 #     @classmethod

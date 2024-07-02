@@ -1,5 +1,5 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
-from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,UserLoginSerializer,UserSerializer
+from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,13 +7,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-
-from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from django.utils import timezone
+from base import email_inf
 
 class UpdateLocationApi(APIView):
     permission_classes = []
@@ -156,3 +155,56 @@ class UserLoginApi(APIView):
             })
         else:
             return Response({"message": "用户登录失败，请检查您的账号密码"})
+        
+
+class Is_PasswordApi(APIView):
+    permission_classes = []
+    def post(self, request: Request) -> Response:
+        serializer = IsPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if get_user_model().objects.get(username=serializer.validated_data["username"]) == None:
+            return Response("用户不存在")
+        user = get_user_model().objects.get(username=serializer.validated_data["username"])
+        if user.email == serializer.validated_data["email"]:
+            token_value = get_random_string(length=6)
+            user.token = token_value
+            user.token_expires = timezone.now() + timezone.timedelta(minutes=2)  # 设置2分钟后过期
+            user.save()
+            send_mail(
+                '重置密码',
+                message=f'您正在尝试找回密码，您的令牌是{token_value}',
+                from_email=email_inf.EMAIL_FROM,
+                recipient_list=[user.email],
+            )
+            return Response({
+                "找回密码的令牌邮件已经发至您的预留邮箱，请查看！"
+            })
+        else:
+            return Response("邮箱错误或不存在")
+
+
+# 后续感觉需要添加验证码等防爆破
+class ResetPasswordApi(APIView):
+    permission_classes = []
+    def post(self, request: Request) -> Response:
+        serializer = ResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            if serializer.validated_data['token'] == user.token and user.token_expires and timezone.now() <= user.token_expires:
+                user = get_user_model().objects.get(username=serializer.validated_data['username'])
+                # 更新密码前，先使用 set_password 方法加密密码
+                user.set_password(serializer.validated_data['password'])
+                user.save()
+                return Response({
+                    f"您的密码修改成功，请重新登录"
+                })
+            else:
+                return Response({
+                    "令牌超时或错误"
+                })
+        else :
+            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+
+            

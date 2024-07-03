@@ -1,5 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
-from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer
+from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer
+from .serializers import modifyGenderSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -56,7 +57,7 @@ class UpdateACCApi(APIView):
         acc_y = serializer.validated_data.get('acc_y')
         acc_z = serializer.validated_data.get('acc_z')
 
-        AccelerometerInf.objects.create(username=usename,device=device, acc_y=acc_y,acc_x=acc_x,acc_z=acc_z)
+        AccelerometerInf.objects.create(username=username,device=device, acc_y=acc_y,acc_x=acc_x,acc_z=acc_z)
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
 
@@ -159,7 +160,7 @@ class UserLoginApi(APIView):
         else:
             return Response({"message": "用户登录失败，请检查您的账号密码"})
         
-
+# 令牌发送api 通用api
 class Is_PasswordApi(APIView):
     permission_classes = []
     def post(self, request: Request) -> Response:
@@ -175,12 +176,12 @@ class Is_PasswordApi(APIView):
             user.save()
             send_mail(
                 '重置密码',
-                message=f'您正在尝试找回密码，您的令牌是{token_value}',
+                message=f'您正在尝试找回密码或者修改其他验证信息，您的令牌是{token_value}',
                 from_email=email_inf.EMAIL_FROM,
                 recipient_list=[user.email],
             )
             return Response({
-                "找回密码的令牌邮件已经发至您的预留邮箱，请查看！"
+                "令牌邮件已经发至您的预留邮箱，请查看！"
             })
         else:
             return Response("邮箱错误或不存在")
@@ -210,4 +211,74 @@ class ResetPasswordApi(APIView):
         else :
             return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
 
-            
+class modifyPasswordApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request:Request) -> Response:
+        serializer = modifyPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = request.user.username
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            if user.check_password(serializer.validated_data['old_password']):
+                user.set_password(serializer.validated_data['password'])
+                user.save()
+                return Response({
+                    f"您的密码修改成功，请重新登录"
+                })
+        return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+
+class modifyPhoneApi(APIView):
+    permission_classes = []
+    def post(self, request: Request) -> Response:
+        serializer = modifyPhoneSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
+                user = get_user_model().objects.get(username=serializer.validated_data['username'])
+                user.phone_number = serializer.validated_data['phone_number']
+                user.save()
+                return Response({
+                    f"您的手机号修改成功!"
+                })
+            else:
+                return Response({
+                    "令牌超时或错误"
+                })
+        else :
+            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+
+class modifyEmailApi(APIView):
+    permission_classes = []
+    def post(self, request: Request) -> Response:
+        serializer = modifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
+                user = get_user_model().objects.get(username=serializer.validated_data['username'])
+                user.email = serializer.validated_data['email']
+                user.save()
+                return Response({
+                    f"您的邮箱地址修改成功!"
+                })
+            else:
+                return Response({
+                    "令牌超时或错误"
+                })
+        else :
+            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+        
+class modifyGenderApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request:Request) -> Response:
+        serializer = modifyGenderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = request.user.username
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            user.gender= serializer.validated_data['gender']
+            user.save()
+            return Response("性别修改成功")

@@ -43,6 +43,11 @@ class CustomUser(AbstractUser):
         max_length=6,
         verbose_name = "修改密码令牌" 
     )
+    name = models.CharField(
+        max_length=20,
+        verbose_name="真名",
+        default="",
+    )
     token_expires = models.DateTimeField(verbose_name="令牌过期时间", default=timezone.now)
 
 

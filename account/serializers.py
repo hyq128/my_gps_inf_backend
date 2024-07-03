@@ -1,9 +1,6 @@
 from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -80,7 +77,15 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "device",
             "phone_number",
+            "name",
         ]
+    email = serializers.EmailField(
+        required=True
+    )
+    name = serializers.CharField(
+        max_length=20,
+        required=True
+    )
 
     def create(self, validated_data: dict) -> CustomUser:
         #密码单独拿出来，因为需要加密后才能存在数据库
@@ -103,7 +108,7 @@ class UserLoginSerializer(serializers.Serializer):
         required=True
     )
 
-# 找回密码
+# 通用验阵
 class IsPasswordSerializer(serializers.Serializer):
     email=serializers.CharField(
        required=True
@@ -123,6 +128,53 @@ class ResetSerializer(serializers.Serializer):
     )
     password= serializers.CharField(
         max_length=128,
+        required=True
+    )
+
+class modifyPasswordSerializer(serializers.Serializer):
+    password= serializers.CharField(
+        max_length=128,
+        required=True
+    )
+
+    old_password= serializers.CharField(
+        max_length=128,
+        required=True
+    )
+
+
+# 手机号修改
+class modifyPhoneSerializer(serializers.Serializer):
+    username = serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    
+    phone_number= serializers.CharField(
+        max_length=11,
+        required=True
+    )
+    token=serializers.CharField(
+        required=True
+    )
+
+# 邮箱修改
+class modifyEmailSerializer(serializers.Serializer):
+    username = serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    email= serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    token=serializers.CharField(
+        required=True
+    )
+
+class modifyGenderSerializer(serializers.Serializer):
+    gender= serializers.CharField(
+        max_length=10,
         required=True
     )
 

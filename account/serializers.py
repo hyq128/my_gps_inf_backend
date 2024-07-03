@@ -8,9 +8,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationInf
-        fields = ['longitude', 'latitude','timestamp']
+        fields = ['longitude', 'latitude','timestamp','device']
 
-    
     longitude = serializers.FloatField(
         required=True
     )
@@ -19,25 +18,37 @@ class LocationSerializer(serializers.ModelSerializer):
         required=True
     )
 
-    timestamp = serializers.DateTimeField()
-
-class BlueToothSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BlueToothInf
-        fields = ['connection_device','timestamp']
-    
-    connection_device = serializers.CharField(
+    timestamp = serializers.DateTimeField(
+        required=False
+    )
+    device = serializers.CharField(
         max_length=150,
         required=True
     )
 
-    timestamp = serializers.DateTimeField()
+class BlueToothSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlueToothInf
+        fields = ['connection_device','device','timestamp']
+    
+    connection_device = serializers.CharField(
+        max_length=1500000,
+        required=True
+    )
+
+    device = serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    timestamp = serializers.DateTimeField(
+        required=False
+    )
 
     
 class AccSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccelerometerInf
-        fields = ['acc_x', 'acc_y','acc_z','timestamp']
+        fields = ['acc_x', 'acc_y','acc_z','timestamp','device']
     
     acc_x=serializers.FloatField(
         required=True
@@ -51,7 +62,13 @@ class AccSerializer(serializers.ModelSerializer):
         required=True
     )
 
-    timestamp = serializers.DateTimeField()
+    timestamp = serializers.DateTimeField(
+        required=False
+    )    
+    device = serializers.CharField(
+        max_length=150,
+        required=True
+    )
 
 
 class UserSerializer(serializers.ModelSerializer):

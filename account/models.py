@@ -3,17 +3,20 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 class LocationInf(models.Model):
+    username = models.CharField(max_length=10)
     longitude = models.FloatField(default=0.0)
     latitude = models.FloatField(default=0.0)
     device = models.CharField(max_length=150, default="")
     timestamp = models.DateTimeField(auto_now_add=True)  # 添加记录时间的字段
 
 class BlueToothInf(models.Model):
-    connection_device = models.CharField(max_length=150, default="")
+    username = models.CharField(max_length=10)
+    connection_device =  models.CharField(max_length=1500000) 
     device = models.CharField(max_length=150, default="")
     timestamp = models.DateTimeField(auto_now_add=True)  # 添加记录时间的字段
 
 class AccelerometerInf(models.Model):
+    username = models.CharField(max_length=10)
     acc_x = models.FloatField(default=0.0)
     acc_y = models.FloatField(default=0.0)
     acc_z = models.FloatField(default=0.0)

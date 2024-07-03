@@ -15,8 +15,9 @@ from django.utils import timezone
 from base import email_inf
 
 class UpdateLocationApi(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     def post(self,request):
+        username = request.user.username
         serializer = LocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
@@ -24,27 +25,29 @@ class UpdateLocationApi(APIView):
         longitude = serializer.validated_data.get('longitude')
         latitude = serializer.validated_data.get('latitude')
 
-        LocationInf.objects.create(device=device, longitude=longitude, latitude=latitude)
+        LocationInf.objects.create(usename=username,device=device, longitude=longitude, latitude=latitude)
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
 
 class UpdateBTApi(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     def post(self,request):
+        username = request.user.username
         serializer = BlueToothSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
         device = serializer.validated_data.get('device')
         connection_device = serializer.validated_data.get('connection_device')
 
-        BlueToothInf.objects.create(device=device, connection_device =connection_device)
+        BlueToothInf.objects.create(username=username, device=device, connection_device =connection_device)
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
 
 
 class UpdateACCApi(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     def post(self,request):
+        username = request.user.username
         serializer = AccSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
@@ -53,7 +56,7 @@ class UpdateACCApi(APIView):
         acc_y = serializer.validated_data.get('acc_y')
         acc_z = serializer.validated_data.get('acc_z')
 
-        AccelerometerInf.objects.create(device=device, acc_y=acc_y,acc_x=acc_x,acc_z=acc_z)
+        AccelerometerInf.objects.create(username=usename,device=device, acc_y=acc_y,acc_x=acc_x,acc_z=acc_z)
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
 
@@ -69,7 +72,7 @@ class GetACCData(APIView):
             # 获取用户的设备信息
             device = user.device
             # 获取与设备相关的加速计信息
-            accs = AccelerometerInf.objects.filter(device=device)
+            accs = AccelerometerInf.objects.filter(device=device).filter(username=username)
             acc_serializer = AccSerializer(accs, many=True)
             # 返回数据
             return Response({
@@ -90,7 +93,7 @@ class GetGPSData(APIView):
             # 获取用户的设备信息
             device = user.device
             # 获取与设备相关的位置信息
-            locations = LocationInf.objects.filter(device=device)
+            locations = LocationInf.objects.filter(device=device).filter(username=username)
             location_serializer = LocationSerializer(locations, many=True)
             # 返回数据
             return Response({
@@ -112,7 +115,7 @@ class GetBTData(APIView):
             # 获取用户的设备信息
             device = user.device
             # 获取与设备相关的蓝牙信息
-            bluetooths = BlueToothInf.objects.filter(device=device)
+            bluetooths = BlueToothInf.objects.filter(device=device).filter(username=username)
             bluetooth_serializer = BlueToothSerializer(bluetooths, many=True)
 
             # 返回数据

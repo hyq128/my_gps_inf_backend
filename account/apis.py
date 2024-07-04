@@ -1,5 +1,5 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
-from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer
+from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
 from .serializers import modifyGenderSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -209,7 +209,7 @@ class ResetPasswordApi(APIView):
                     "令牌超时或错误"
                 })
         else :
-            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
 
 class modifyPasswordApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -225,7 +225,7 @@ class modifyPasswordApi(APIView):
                 return Response({
                     f"您的密码修改成功，请重新登录"
                 })
-        return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
 
 class modifyPhoneApi(APIView):
     permission_classes = []
@@ -269,7 +269,7 @@ class modifyEmailApi(APIView):
                     "令牌超时或错误"
                 })
         else :
-            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
         
 class modifyGenderApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -282,3 +282,17 @@ class modifyGenderApi(APIView):
             user.gender= serializer.validated_data['gender']
             user.save()
             return Response("性别修改成功")
+        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+
+class modifyNameApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request:Request) -> Response:
+        serializer = modifyNameSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = request.user.username
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            user.name= serializer.validated_data['name']
+            user.save()
+            return Response("姓名修改成功")
+        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)

@@ -178,6 +178,12 @@ class modifyGenderSerializer(serializers.Serializer):
         required=True
     )
 
+class modifyNameSerializer(serializers.Serializer):
+    name= serializers.CharField(
+        max_length=20,
+        required=True
+    )
+
 # class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 #     @classmethod
 #     def get_token(cls, user):

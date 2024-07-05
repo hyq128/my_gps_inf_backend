@@ -78,7 +78,6 @@ class GetACCData(APIView):
             # 返回数据
             return Response({
                 'username':username,
-                'device':device,
                 'accelerometers': acc_serializer.data,
             })
         else:
@@ -99,7 +98,6 @@ class GetGPSData(APIView):
             # 返回数据
             return Response({
                 'username':username,
-                'device':device,
                 'Locations':location_serializer.data,
             })
         else:
@@ -122,7 +120,6 @@ class GetBTData(APIView):
             # 返回数据
             return Response({
                 'username':username,
-                'device':device,
                 'bluetooths': bluetooth_serializer.data,
             })
         else:

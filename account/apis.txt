@@ -1,0 +1,15 @@
+ 
+http://gps.primedigitaltech.com:8000/api/login/
+
+http://gps.primedigitaltech.com:8000/api/login/
+
+
+http://gps.primedigitaltech.com:8000/api/login/
+
+
+http://gps.primedigitaltech.com:8000/api/login/
+
+
+http://gps.primedigitaltech.com:8000/api/login/
+
+http://gps.primedigitaltech.com:8000/api/getGPSdata/

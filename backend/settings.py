@@ -37,6 +37,7 @@ APPS_PREFIX = ""
 # 包含所有应用程序
 APPS = [
     "account",   
+    "survey",
 ]
 
 LOCAL_APPS = [

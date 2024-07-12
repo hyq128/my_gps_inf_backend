@@ -9,6 +9,9 @@ from .models import CustomUser
 from .models import LocationInf,AccelerometerInf,BlueToothInf
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe, SafeText
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 @admin.register(CustomUser)
@@ -56,7 +59,7 @@ class LocationAdmin(admin.ModelAdmin):
     fields=('username','device','longitude','latitude','timestamp')
     list_display=('username','device','longitude','latitude','timestamp')
     # 要搜索的列的值 
-    search_fields = ['device']
+    search_fields = ['username']
     list_per_page = 20
 admin.site.register(LocationInf,LocationAdmin)
 
@@ -65,7 +68,7 @@ class BlueToothAdmin(admin.ModelAdmin):
     fields=('username','device','connection_device','timestamp')
     list_display=('username','device','connection_device','timestamp')
     # 要搜索的列的值 
-    search_fields = ['device']
+    search_fields = ['username']
     list_per_page = 6
 admin.site.register(BlueToothInf,BlueToothAdmin)
 
@@ -74,6 +77,6 @@ class AccelerometerAdmin(admin.ModelAdmin):
     fields=('username','device','acc_x','acc_y','acc_z','timestamp')
     list_display=('username','device','acc_x','acc_y','acc_z','timestamp')
     # 要搜索的列的值 
-    search_fields = ['device']
+    search_fields = ['username']
     list_per_page = 20
 admin.site.register(AccelerometerInf,AccelerometerAdmin)

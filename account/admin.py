@@ -19,7 +19,8 @@ class CustomUserAdmin(DjangoUserAdmin):
     """Add additional fields to user admin page."""
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("name","email","device","phone_number","gender")}),
+        (_("Personal info"), {"fields": ("name","email","device","phone_number","gender","exp_id","exp_name","exp_state"
+                                         )}),
         (
             _("Permissions"),
             {
@@ -80,3 +81,4 @@ class AccelerometerAdmin(admin.ModelAdmin):
     search_fields = ['username']
     list_per_page = 20
 admin.site.register(AccelerometerInf,AccelerometerAdmin)
+

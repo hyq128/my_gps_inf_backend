@@ -68,12 +68,8 @@ class GetACCData(APIView):
     def get(self, request):
         username = request.user.username
         if username:
-            # 获取用户对象，如果不存在则返回404
-            user = get_object_or_404(CustomUser, username=username)
-            # 获取用户的设备信息
-            device = user.device
             # 获取与设备相关的加速计信息
-            accs = AccelerometerInf.objects.filter(device=device).filter(username=username)
+            accs = AccelerometerInf.objects.filter(username=username)
             acc_serializer = AccSerializer(accs, many=True)
             # 返回数据
             return Response({
@@ -88,12 +84,8 @@ class GetGPSData(APIView):
     def get(self, request):
         username = request.user.username
         if username:
-            # 获取用户对象，如果不存在则返回404
-            user = get_object_or_404(CustomUser, username=username)
-            # 获取用户的设备信息
-            device = user.device
             # 获取与设备相关的位置信息
-            locations = LocationInf.objects.filter(device=device).filter(username=username)
+            locations = LocationInf.objects.filter(username=username)
             location_serializer = LocationSerializer(locations, many=True)
             # 返回数据
             return Response({
@@ -109,14 +101,9 @@ class GetBTData(APIView):
     def get(self, request):
         username = request.user.username
         if username:
-            # 获取用户对象，如果不存在则返回404
-            user = get_object_or_404(CustomUser, username=username)
-            # 获取用户的设备信息
-            device = user.device
             # 获取与设备相关的蓝牙信息
-            bluetooths = BlueToothInf.objects.filter(device=device).filter(username=username)
+            bluetooths = BlueToothInf.objects.filter(username=username)
             bluetooth_serializer = BlueToothSerializer(bluetooths, many=True)
-
             # 返回数据
             return Response({
                 'username':username,

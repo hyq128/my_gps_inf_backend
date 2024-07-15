@@ -24,8 +24,8 @@ class AccelerometerInf(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)  # 添加记录时间的字段
     
 class CustomUser(AbstractUser):
-    email = models.EmailField(verbose_name="邮箱地址", blank=True)
-    device = models.CharField(max_length=150, default="",verbose_name="设备及其操作系统")
+    email = models.EmailField(verbose_name="邮箱地址")
+    device = models.CharField(max_length=150, default="",verbose_name="设备及其操作系统",blank=True)
     phone_number = models.CharField(
         max_length=11,
         verbose_name="手机号码",
@@ -49,5 +49,23 @@ class CustomUser(AbstractUser):
         default="",
     )
     token_expires = models.DateTimeField(verbose_name="令牌过期时间", default=timezone.now)
+
+    exp_state = models.CharField(
+        max_length=64,
+        verbose_name="实验状态",
+        default="inactive",
+    )
+
+    exp_name = models.CharField(
+        max_length=64,
+        verbose_name="实验名称",
+        default="",
+    )
+
+    exp_id = models.IntegerField(
+        verbose_name="实验ID",
+        default=-1,
+    )
+
 
 

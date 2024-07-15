@@ -38,6 +38,7 @@ APPS_PREFIX = ""
 APPS = [
     "account",   
     "survey",
+    "experiment",
 ]
 
 LOCAL_APPS = [

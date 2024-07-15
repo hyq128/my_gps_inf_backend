@@ -14,7 +14,7 @@ class qusetionAdmin(admin.ModelAdmin):
 admin.site.register(Question,qusetionAdmin)
 
 class surveyAdmin(admin.ModelAdmin):
-    fields = ('survey_id', 'title','description','created_at','questions')
+    fields = ('title','description','questions')
     list_display = ('survey_id', 'title','description','created_at','questions')
     list_per_page = 10
     search_fields = ['title']

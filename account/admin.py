@@ -56,7 +56,7 @@ admin.site.unregister(Group)  # Avoid multiple GroupAdmin
 
 # #用户信息管理：
 class LocationAdmin(admin.ModelAdmin):
-    fields=('username','device','longitude','latitude','timestamp')
+    fields=('username','device','longitude','latitude')
     list_display=('username','device','longitude','latitude','timestamp')
     # 要搜索的列的值 
     search_fields = ['username']
@@ -65,7 +65,7 @@ admin.site.register(LocationInf,LocationAdmin)
 
 
 class BlueToothAdmin(admin.ModelAdmin):
-    fields=('username','device','connection_device','timestamp')
+    fields=('username','device','connection_device')
     list_display=('username','device','connection_device','timestamp')
     # 要搜索的列的值 
     search_fields = ['username']
@@ -74,7 +74,7 @@ admin.site.register(BlueToothInf,BlueToothAdmin)
 
 
 class AccelerometerAdmin(admin.ModelAdmin):
-    fields=('username','device','acc_x','acc_y','acc_z','timestamp')
+    fields=('username','device','acc_x','acc_y','acc_z')
     list_display=('username','device','acc_x','acc_y','acc_z','timestamp')
     # 要搜索的列的值 
     search_fields = ['username']

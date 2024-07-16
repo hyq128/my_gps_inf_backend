@@ -57,8 +57,8 @@ admin.site.unregister(Group)  # Avoid multiple GroupAdmin
 
 # #用户信息管理：
 class LocationAdmin(admin.ModelAdmin):
-    fields=('username','device','longitude','latitude')
-    list_display=('username','device','longitude','latitude','timestamp')
+    fields=('username','device','longitude','latitude','accuracy')
+    list_display=('username','device','longitude','latitude','accuracy','timestamp')
     # 要搜索的列的值 
     search_fields = ['username']
     list_per_page = 20

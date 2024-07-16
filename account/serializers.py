@@ -5,13 +5,17 @@ from django.contrib.auth import get_user_model
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationInf
-        fields = ['longitude', 'latitude','timestamp','device']
+        fields = ['longitude', 'latitude','timestamp','device','accuracy']
 
     longitude = serializers.FloatField(
         required=True
     )
 
     latitude = serializers.FloatField(
+        required=True
+    )
+
+    accuracy = serializers.FloatField(
         required=True
     )
 

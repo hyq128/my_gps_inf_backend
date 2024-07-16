@@ -25,8 +25,9 @@ class UpdateLocationApi(APIView):
         device = serializer.validated_data.get('device')
         longitude = serializer.validated_data.get('longitude')
         latitude = serializer.validated_data.get('latitude')
+        accuracy = serializer.validated_data.get('accuracy')
 
-        LocationInf.objects.create(usename=username,device=device, longitude=longitude, latitude=latitude)
+        LocationInf.objects.create(username=username,device=device, longitude=longitude, latitude=latitude,accuracy=accuracy)
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
 

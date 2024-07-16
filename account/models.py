@@ -8,6 +8,7 @@ class LocationInf(models.Model):
     latitude = models.FloatField(default=0.0)
     device = models.CharField(max_length=150, default="")
     timestamp = models.DateTimeField(auto_now_add=True)  # 添加记录时间的字段
+    accuracy = models.FloatField(default=0.0)
 
 class BlueToothInf(models.Model):
     username = models.CharField(max_length=10)

@@ -5,24 +5,36 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-
+import re
 
 # 查看某个问卷的所有问题
 class ShowQuestionApi(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
+
     def get(self, request, survey_id):
         try:
             survey = Survey.objects.get(survey_id=survey_id)
         except Survey.DoesNotExist:
             return Response({"error": "Survey does not exist"}, status=status.HTTP_404_NOT_FOUND)
         
-        questions_id = Survey.objects.filter(survey_id=survey_id).values('questions')
-        for question_id in questions_id:
-            question_id = question_id['questions']
-            question = Question.objects.get(question_id=question_id)
-            question_serializer = QuestionSerializer(question)
-        return Response(question_serializer.data, status=status.HTTP_200_OK)
-
+        raw_id = Survey.objects.filter(survey_id=survey_id).values('questions').first()
+        if not raw_id:
+            return Response({"error": "No questions found for this survey"}, status=status.HTTP_404_NOT_FOUND)
+        
+        questions_str = raw_id['questions']
+        question_ids = re.findall(r'\d+', questions_str)  # 使用正则表达式找到所有数字
+        
+        questions = []
+        for question_id in question_ids:
+            try:
+                question = Question.objects.get(question_id=question_id)
+                question_serializer = QuestionSerializer(question)
+                questions.append(question_serializer.data)
+            except Question.DoesNotExist:
+                # 如果问题不存在，可以根据业务需求处理，例如跳过这个问题或返回错误信息
+                pass
+        return Response(questions, status=status.HTTP_200_OK)
+    
 # 创建问卷
 class createSurveyApi(APIView):
     permission_classes = [IsAuthenticated]

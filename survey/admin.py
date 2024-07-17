@@ -19,7 +19,7 @@ class surveyAdmin(admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['title']
     list_filter = ('title',)
-    list_editable = ('title','title','questions')
+    list_editable = ('title','description','questions')
 admin.site.register(Survey,surveyAdmin)
 
 

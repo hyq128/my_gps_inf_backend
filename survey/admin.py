@@ -23,7 +23,7 @@ admin.site.register(Survey, SurveyAdmin)
 
 # 注册Answer模型的管理员界面
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('response_id', 'survey_id', 'question_id', 'get_question_text', 'username', 'answer_text', 'response_date')
+    list_display = ('response_id', 'survey_id', 'question_id', 'get_question_text', 'answer_text', 'username', 'response_date')
     list_per_page = 10
     search_fields = ['username']
     list_filter = ('survey_id',)

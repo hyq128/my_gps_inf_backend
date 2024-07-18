@@ -152,7 +152,7 @@ class Is_PasswordApi(APIView):
         serializer = IsPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if get_user_model().objects.get(username=serializer.validated_data["username"]) == None:
-            return Response("用户不存在")
+            return Response("用户不存在",status=status.HTTP_400_BAD_REQUEST)
         user = get_user_model().objects.get(username=serializer.validated_data["username"])
         if user.email == serializer.validated_data["email"]:
             token_value = get_random_string(length=6)
@@ -169,7 +169,7 @@ class Is_PasswordApi(APIView):
                 "令牌邮件已经发至您的预留邮箱，请查看！"
             })
         else:
-            return Response("邮箱错误或不存在")
+            return Response("邮箱错误或不存在",status=status.HTTP_400_BAD_REQUEST)
 
 
 # 后续感觉需要添加验证码等防爆破

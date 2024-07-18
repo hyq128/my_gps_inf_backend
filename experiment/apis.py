@@ -7,6 +7,7 @@ from datetime import datetime
 from account.models import CustomUser
 
 class seeExperimentApi(APIView):
+    permission_classes=[]
     def get(self,request):
         now = datetime.now()
         # 筛选end_time在当前时间之前的实验记录

@@ -22,6 +22,8 @@ class SurveyAdmin(admin.ModelAdmin):
     def get_question_text(self, obj):
         res=""
         for i in obj.questions.split(';'):
+            if i=='':
+                continue
             res+=f"{i}."+Question.objects.get(question_id=i).question_text
         return res
     get_question_text.short_description = 'Question Text'

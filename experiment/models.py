@@ -8,6 +8,7 @@ class experiment(models.Model):
     end_time = models.DateTimeField()
     exp_id = models.AutoField(primary_key=True)
     exp_name = models.CharField(max_length=64)
+    description = models.CharField(max_length=255)
     gps_frequency = models.IntegerField(verbose_name="GPS调用间隔(分钟)",default=-1)
     bt_frequency = models.IntegerField(verbose_name="蓝牙调用频率(分钟)",default=-1)
     acc_frequency = models.IntegerField(verbose_name="加速度调用频率(秒)",default=-1)

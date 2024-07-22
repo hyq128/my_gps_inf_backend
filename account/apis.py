@@ -78,7 +78,7 @@ class GetACCData(APIView):
                 'accelerometers': acc_serializer.data,
             })
         else:
-            return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
 
 class GetGPSData(APIView):
     permission_classes = [IsAuthenticated]
@@ -94,7 +94,7 @@ class GetGPSData(APIView):
                 'Locations':location_serializer.data,
             })
         else:
-            return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetBTData(APIView):
@@ -111,7 +111,7 @@ class GetBTData(APIView):
                 'bluetooths': bluetooth_serializer.data,
             })
         else:
-            return Response({'message': '请先登录'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
 
 #注册api
 class UserRegisterApi(APIView):
@@ -120,7 +120,7 @@ class UserRegisterApi(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "用户注册成功"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "User registration succeeded"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -132,7 +132,7 @@ class UserLoginApi(APIView):
         try:
             user = get_user_model().objects.get(username=serializer.validated_data["username"])
         except ObjectDoesNotExist:
-            return Response({"message": "用户未注册"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "User not registered"}, status=status.HTTP_400_BAD_REQUEST)
         
         if user.check_password(serializer.validated_data["password"]):
             refresh: RefreshToken = RefreshToken.for_user(user)  # 生成refresh token
@@ -143,7 +143,7 @@ class UserLoginApi(APIView):
                 "expire": refresh.access_token.payload["exp"] - refresh.access_token.payload["iat"],
             })
         else:
-            return Response({"message": "用户登录失败，请检查您的账号密码"})
+            return Response({"message": "User login failed, please check your account password"})
         
 # 令牌发送api 通用api
 class Is_PasswordApi(APIView):
@@ -166,10 +166,10 @@ class Is_PasswordApi(APIView):
                 recipient_list=[user.email],
             )
             return Response({
-                "令牌邮件已经发至您的预留邮箱，请查看！"
+                "Token email has been sent to your reserved mailbox, please check!"
             })
         else:
-            return Response("邮箱错误或不存在",status=status.HTTP_400_BAD_REQUEST)
+            return Response("The mailbox is incorrect or does not exist",status=status.HTTP_400_BAD_REQUEST)
 
 
 # 后续感觉需要添加验证码等防爆破
@@ -187,14 +187,14 @@ class ResetPasswordApi(APIView):
                 user.set_password(serializer.validated_data['password'])
                 user.save()
                 return Response({
-                    f"您的密码修改成功，请重新登录"
+                    f"Your password has been changed successfully. Please log in again"
                 })
             else:
                 return Response({
                     "令牌超时或错误"
                 })
         else :
-            return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
 class modifyPasswordApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -208,9 +208,9 @@ class modifyPasswordApi(APIView):
                 user.set_password(serializer.validated_data['password'])
                 user.save()
                 return Response({
-                    f"您的密码修改成功，请重新登录"
+                    f"Your password has been changed successfully. Please log in again"
                 })
-        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+        return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
 class modifyPhoneApi(APIView):
     permission_classes = []
@@ -232,7 +232,7 @@ class modifyPhoneApi(APIView):
                     "令牌超时或错误"
                 })
         else :
-            return Response({"用户名不存在"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"The user name does not exist"},status=status.HTTP_404_NOT_FOUND)
 
 class modifyEmailApi(APIView):
     permission_classes = []
@@ -247,14 +247,14 @@ class modifyEmailApi(APIView):
                 user.email = serializer.validated_data['email']
                 user.save()
                 return Response({
-                    f"您的邮箱地址修改成功!"
+                    f"Your email address has been successfully modified!"
                 })
             else:
                 return Response({
                     "令牌超时或错误"
                 })
         else :
-            return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
         
 class modifyGenderApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -266,8 +266,8 @@ class modifyGenderApi(APIView):
             user = get_user_model().objects.get(username=username)
             user.gender= serializer.validated_data['gender']
             user.save()
-            return Response("性别修改成功")
-        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+            return Response("Gender modification successful")
+        return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
 class modifyNameApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -279,5 +279,5 @@ class modifyNameApi(APIView):
             user = get_user_model().objects.get(username=username)
             user.name= serializer.validated_data['name']
             user.save()
-            return Response("姓名修改成功")
-        return Response({"用户名不存在"},status=status.HTTP_400_BAD_REQUEST)
+            return Response("Name changed successfully")
+        return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)

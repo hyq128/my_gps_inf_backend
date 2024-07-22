@@ -53,7 +53,6 @@ class submitQuestionApi(APIView):
         if question_serializer.is_valid():
             question_serializer.save()
             return Response(question_serializer.data)
-            return Response("以上问题添加成功!")
         return Response(question_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

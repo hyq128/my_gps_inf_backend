@@ -14,11 +14,17 @@ admin.site.register(Question, QuestionAdmin)
 # 注册Survey模型的管理员界面
 class SurveyAdmin(admin.ModelAdmin):
     fields = ('title', 'description', 'questions')
-    list_display = ('survey_id', 'title', 'description', 'created_at', 'questions')
+    list_display = ('survey_id', 'title', 'description', 'created_at', 'questions','get_question_text')
     list_per_page = 10
     search_fields = ['title']
     list_filter = ('title',)
     list_editable = ('title', 'description', 'questions')
+    def get_question_text(self, obj):
+        res=""
+        for i in obj.questions.split(';'):
+            res+=f"{i}."+Question.objects.get(question_id=i).question_text
+        return res
+    get_question_text.short_description = 'Question Text'
 admin.site.register(Survey, SurveyAdmin)
 
 # 注册Answer模型的管理员界面

@@ -16,16 +16,46 @@ class seeExperimentApi(APIView):
         return Response(serializer.data)
 
 class chooseExperimentApi(APIView):
-    permission_classes=[IsAuthenticated]
-    def post(self,request):
-        if request.data.get('exp_name')==None:
-            return Response("请选择一个实验")
-        exp_name=request.data.get('exp_name')
-        exp_id=experiment.objects.get(exp_name=exp_name).exp_id
-        participants=experiment.objects.get(exp_name=exp_name).participants_name+request.user.username+";"
-        experiment.objects.filter(exp_id=exp_id).update(participants_name=participants)
-        CustomUser.objects.filter(username=request.user.username).update(exp_id=exp_id,exp_name=exp_name,exp_state="active")
-        return Response("您的实验已成功保存",{"exp_id":exp_id,"exp_name":exp_name})
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        user = request.user
+        if request.data.get('exp_name') is None:
+            return Response("Please select an experiment")
+        
+        new_exp_name = request.data.get('exp_name')
+        new_experiment = experiment.objects.get(exp_name=new_exp_name)
+        new_exp_id = new_experiment.exp_id
+
+        # 找到用户当前参与的实验
+        try:
+            current_exp = experiment.objects.get(exp_id=user.exp_id)
+            # 从当前实验的 participants_name 字段中删除用户名
+            participants = current_exp.participants_name.split(';')
+            participants = [p for p in participants if p and p != user.username]
+            current_exp.participants_name = ';'.join(participants) + ';'
+            current_exp.save()
+        except experiment.DoesNotExist:
+            pass
+
+        # 更新新实验的 participants_name 字段
+        new_participants = new_experiment.participants_name + user.username + ";"
+        experiment.objects.filter(exp_id=new_exp_id).update(participants_name=new_participants)
+
+        # 更新用户信息
+        CustomUser.objects.filter(username=user.username).update(exp_id=new_exp_id, exp_name=new_exp_name, exp_state="active")
+        return Response(f"Your choice {new_exp_name} has been successfully saved !")
+
+class myExperimentApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        username=request.user.username
+        if CustomUser.objects.get(username=username).exp_id==-1:
+            return Response("You are not currently participating in any experiments")
+        else:
+            Serializer = seeExperimentSerializer(experiment.objects.get(exp_id=CustomUser.objects.get(username=username).exp_id))
+            return Response(Serializer.data)
+        
 
 class exitExperimentApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -33,13 +63,13 @@ class exitExperimentApi(APIView):
         # 获取当前用户信息
         user = request.user
         if not user.exp_id:
-            return Response("您当前没有参与任何实验")
+            return Response("You are not currently participating in any experiments")
 
         try:
             # 获取用户当前参与的实验信息
             exp = experiment.objects.get(exp_id=user.exp_id)
         except experiment.DoesNotExist:
-            return Response("实验不存在")
+            return Response("The experiment does not exist")
 
         participants = exp.participants_name.split(";")
 
@@ -49,6 +79,6 @@ class exitExperimentApi(APIView):
             exp.participants_name = ";".join(participants)
             exp.save()
             CustomUser.objects.filter(username=user.username).update(exp_id=-1, exp_name="", exp_state="inactive")
-            return Response("您已成功退出实验")
+            return Response("You have successfully exited the experiment")
         else:
-            return Response("您未参与该实验或已经退出")
+            return Response("You are not participating in the experiment or have quit")

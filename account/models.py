@@ -61,6 +61,7 @@ class CustomUser(AbstractUser):
         max_length=64,
         verbose_name="实验名称",
         default="",
+        blank=True,
     )
 
     exp_id = models.IntegerField(

@@ -149,32 +149,32 @@ class modifyPasswordSerializer(serializers.Serializer):
 
 # 手机号修改
 class modifyPhoneSerializer(serializers.Serializer):
-    username = serializers.CharField(
-        max_length=150,
-        required=True
-    )
+    # username = serializers.CharField(
+    #     max_length=150,
+    #     required=True
+    # )
     
     phone_number= serializers.CharField(
         max_length=11,
         required=True
     )
-    token=serializers.CharField(
-        required=True
-    )
+    # token=serializers.CharField(
+    #     required=True
+    # )
 
 # 邮箱修改
 class modifyEmailSerializer(serializers.Serializer):
-    username = serializers.CharField(
-        max_length=150,
-        required=True
-    )
+    # username = serializers.CharField(
+    #     max_length=150,
+    #     required=True
+    # )
     email= serializers.CharField(
         max_length=150,
         required=True
     )
-    token=serializers.CharField(
-        required=True
-    )
+    # token=serializers.CharField(
+    #     required=True
+    # )
 
 class modifyGenderSerializer(serializers.Serializer):
     gender= serializers.CharField(

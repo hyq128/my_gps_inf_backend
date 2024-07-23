@@ -221,49 +221,77 @@ class modifyPasswordApi(APIView):
                 })
         return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
-class modifyPhoneApi(APIView):
-    permission_classes = []
-    def post(self, request: Request) -> Response:
-        serializer = modifyPhoneSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data['username']
-        if get_user_model().objects.get(username=username):
-            user = get_user_model().objects.get(username=username)
-            if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
-                user = get_user_model().objects.get(username=serializer.validated_data['username'])
-                user.phone_number = serializer.validated_data['phone_number']
-                user.save()
-                return Response({
-                    f"您的手机号修改成功!"
-                })
-            else:
-                return Response({
-                    "令牌超时或错误"
-                })
-        else :
-            return Response({"The user name does not exist"},status=status.HTTP_404_NOT_FOUND)
+# class modifyPhoneApi(APIView):
+#     permission_classes = []
+#     def post(self, request: Request) -> Response:
+#         serializer = modifyPhoneSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         username = serializer.validated_data['username']
+#         if get_user_model().objects.get(username=username):
+#             user = get_user_model().objects.get(username=username)
+#             if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
+#                 user = get_user_model().objects.get(username=serializer.validated_data['username'])
+#                 user.phone_number = serializer.validated_data['phone_number']
+#                 user.save()
+#                 return Response({
+#                     f"您的手机号修改成功!"
+#                 })
+#             else:
+#                 return Response({
+#                     "令牌超时或错误"
+#                 })
+#         else :
+#             return Response({"The user name does not exist"},status=status.HTTP_404_NOT_FOUND)
 
+# class modifyEmailApi(APIView):
+#     permission_classes = []
+#     def post(self, request: Request) -> Response:
+#         serializer = modifyEmailSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         username = serializer.validated_data['username']
+#         if get_user_model().objects.get(username=username):
+#             user = get_user_model().objects.get(username=username)
+#             if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
+#                 user = get_user_model().objects.get(username=serializer.validated_data['username'])
+#                 user.email = serializer.validated_data['email']
+#                 user.save()
+#                 return Response({
+#                     f"Your email address has been successfully modified!"
+#                 })
+#             else:
+#                 return Response({
+#                     "令牌超时或错误"
+#                 })
+#         else :
+#             return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+
+# 无安全验证版本
 class modifyEmailApi(APIView):
-    permission_classes = []
-    def post(self, request: Request) -> Response:
+    permission_classes = [IsAuthenticated]
+    def post(self,request:Request) -> Response:
         serializer = modifyEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data['username']
+        username = request.user.username
         if get_user_model().objects.get(username=username):
             user = get_user_model().objects.get(username=username)
-            if serializer.validated_data['token'] == user.token and timezone.now() <= user.token_expires:
-                user = get_user_model().objects.get(username=serializer.validated_data['username'])
-                user.email = serializer.validated_data['email']
-                user.save()
-                return Response({
-                    f"Your email address has been successfully modified!"
-                })
-            else:
-                return Response({
-                    "令牌超时或错误"
-                })
-        else :
-            return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+            user.email= serializer.validated_data['email']
+            user.save()
+            return Response("email modification successful")
+        return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+
+class modifyPhoneApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request:Request) -> Response:
+        serializer = modifyPhoneSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = request.user.username
+        if get_user_model().objects.get(username=username):
+            user = get_user_model().objects.get(username=username)
+            user.phone_number= serializer.validated_data['phone_number']
+            user.save()
+            return Response("phone modification successful")
+        return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+
         
 class modifyGenderApi(APIView):
     permission_classes = [IsAuthenticated]

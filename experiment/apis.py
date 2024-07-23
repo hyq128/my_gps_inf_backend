@@ -51,7 +51,7 @@ class myExperimentApi(APIView):
     def get(self,request):
         username=request.user.username
         if CustomUser.objects.get(username=username).exp_id==-1:
-            return Response("You are not currently participating in any experiments")
+            return Response("You are not currently participating in any experiments",status=520)
         else:
             Serializer = seeExperimentSerializer(experiment.objects.get(exp_id=CustomUser.objects.get(username=username).exp_id))
             return Response([Serializer.data])

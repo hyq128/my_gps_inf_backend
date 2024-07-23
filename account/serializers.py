@@ -188,6 +188,16 @@ class modifyNameSerializer(serializers.Serializer):
         required=True
     )
 
+class userInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "username",
+            "email",
+            "phone_number",
+            "name",
+            "gender",
+        ]
 # class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 #     @classmethod
 #     def get_token(cls, user):

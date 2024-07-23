@@ -1,6 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer
+from .serializers import modifyGenderSerializer,userInfoSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -113,6 +113,15 @@ class GetBTData(APIView):
         else:
             return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
 
+class getUserInfoApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        user = get_object_or_404(CustomUser, username=username)
+        seri=userInfoSerializer(user)
+        return Response(seri.data)
+        
+    
 #注册api
 class UserRegisterApi(APIView):
     permission_classes = []

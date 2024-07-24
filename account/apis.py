@@ -55,7 +55,7 @@ class UpdateLocationApi(APIView):
         flag = 1 if nearby_locations_count >= min_times else 0
 
         # 返回成功响应和flag
-        return Response({"message": "Data saved successfully.", "flag": flag})
+        return Response({"message": "Data saved successfully.", "flag": flag,"longitude_min": longitude_min, "longitude_max": longitude_max, "latitude_min": latitude_min, "latitude_max": latitude_max})
 
 class updateLabelApi(APIView):
     permission_classes = [IsAuthenticated]

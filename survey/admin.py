@@ -26,7 +26,7 @@ class SurveyAdmin(admin.ModelAdmin):
                 continue
             res+=f"{i}."+Question.objects.get(question_id=i).question_text
         return res
-    get_question_text.short_description = 'Question Text'
+    get_question_text.short_description = '具体问题'
 admin.site.register(Survey, SurveyAdmin)
 
 # 注册Answer模型的管理员界面
@@ -39,6 +39,6 @@ class AnswerAdmin(admin.ModelAdmin):
 
     def get_question_text(self, obj):
         return Question.objects.get(question_id=obj.question_id).question_text
-    get_question_text.short_description = 'Question Text'
+    get_question_text.short_description = '具体问题'
 
 admin.site.register(Answer, AnswerAdmin)

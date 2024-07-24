@@ -1,6 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer,userInfoSerializer
+from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,10 +14,13 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.utils import timezone
 from base import email_inf
+from django.db.models import Q
 
 class UpdateLocationApi(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self,request):
+    def post(self, request):
+        tolerance = 0.001
+        min_times = 5
         username = request.user.username
         serializer = LocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -27,9 +30,62 @@ class UpdateLocationApi(APIView):
         latitude = serializer.validated_data.get('latitude')
         accuracy = serializer.validated_data.get('accuracy')
 
-        LocationInf.objects.create(username=username,device=device, longitude=longitude, latitude=latitude,accuracy=accuracy)
-                # 返回成功响应
-        return Response({"message": "Data saved successfully."})
+        # 计算经纬度误差范围
+        longitude_min = longitude - tolerance
+        longitude_max = longitude + tolerance
+        latitude_min = latitude - tolerance
+        latitude_max = latitude + tolerance
+
+        # 检索误差范围内的坐标
+        nearby_locations_count = LocationInf.objects.filter(
+            Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+        ).count()
+
+        # 保存新的位置信息
+        LocationInf.objects.create(
+            username=username,
+            device=device,
+            longitude=longitude,
+            latitude=latitude,
+            accuracy=accuracy
+        )
+
+        # 判断并设置flag
+        flag = 1 if nearby_locations_count >= min_times else 0
+
+        # 返回成功响应和flag
+        return Response({"message": "Data saved successfully.", "flag": flag})
+
+class updateLabel(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        tolerance = 0.001
+        username = request.user.username
+        serializer = LabelSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        longitude = serializer.validated_data.get('longitude')
+        latitude = serializer.validated_data.get('latitude')
+        label = serializer.validated_data.get('label')
+
+        # 计算经纬度误差范围
+        longitude_min = longitude - tolerance
+        longitude_max = longitude + tolerance
+        latitude_min = latitude - tolerance
+        latitude_max = latitude + tolerance
+
+        # 更新符合条件的记录的 label 字段
+        updated_count = LocationInf.objects.filter(
+            Q(username=username) &
+            Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+        ).update(label=label)
+
+        # 返回成功响应和更新的记录数量
+        return Response({"message": f"{updated_count} records updated successfully."}, status=status.HTTP_200_OK)
+    
 
 class UpdateBTApi(APIView):
     permission_classes = [IsAuthenticated]

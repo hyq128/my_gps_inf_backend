@@ -71,6 +71,10 @@ class AccSerializer(serializers.ModelSerializer):
         required=True
     )
 
+class LabelSerializer(serializers.ModelSerializer):
+    longitude = serializers.FloatField(required=True)
+    latitude = serializers.FloatField(required=True)
+    label =  serializers.CharField(max_length=20, required=True)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

@@ -57,7 +57,7 @@ class UpdateLocationApi(APIView):
         # 返回成功响应和flag
         return Response({"message": "Data saved successfully.", "flag": flag})
 
-class updateLabel(APIView):
+class updateLabelApi(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

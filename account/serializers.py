@@ -72,6 +72,11 @@ class AccSerializer(serializers.ModelSerializer):
     )
 
 class LabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocationInf
+        fields = [
+            'longitude', 'latitude','label',
+        ]
     longitude = serializers.FloatField(required=True)
     latitude = serializers.FloatField(required=True)
     label =  serializers.CharField(max_length=20, required=True)

@@ -18,13 +18,14 @@ from django.db.models import Q
 
 class UpdateLocationApi(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         tolerance = 0.001
         min_times = 5
         username = request.user.username
         serializer = LocationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         device = serializer.validated_data.get('device')
         longitude = serializer.validated_data.get('longitude')
         latitude = serializer.validated_data.get('latitude')
@@ -36,10 +37,12 @@ class UpdateLocationApi(APIView):
         latitude_min = latitude - tolerance
         latitude_max = latitude + tolerance
 
-        # 检索误差范围内的坐标
+        # 检索误差范围内、用户名匹配并且label字段为空的坐标
         nearby_locations_count = LocationInf.objects.filter(
             Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
-            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max) &
+            Q(username=username) &
+            Q(label='')
         ).count()
 
         # 保存新的位置信息
@@ -55,8 +58,15 @@ class UpdateLocationApi(APIView):
         flag = 1 if nearby_locations_count >= min_times else 0
 
         # 返回成功响应和flag
-        return Response({"message": "Data saved successfully.", "flag": flag,"longitude_min": longitude_min, "longitude_max": longitude_max, "latitude_min": latitude_min, "latitude_max": latitude_max})
-
+        return Response({
+            "message": "Data saved successfully.",
+            "flag": flag,
+            "longitude_min": longitude_min,
+            "longitude_max": longitude_max,
+            "latitude_min": latitude_min,
+            "latitude_max": latitude_max
+        })
+    
 class updateLabelApi(APIView):
     permission_classes = [IsAuthenticated]
 

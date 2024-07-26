@@ -1,17 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import *
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin
 from .models import CustomUser
-from .models import LocationInf,AccelerometerInf,BlueToothInf
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe, SafeText
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from .models import LocationInf,AccelerometerInf,BlueToothInf,gps_cluster
 
 
 @admin.register(CustomUser)
@@ -81,4 +75,12 @@ class AccelerometerAdmin(admin.ModelAdmin):
     search_fields = ['username']
     list_per_page = 20
 admin.site.register(AccelerometerInf,AccelerometerAdmin)
+
+class gps_clusterAdmin(admin.ModelAdmin):
+    fields=('username','cluster_name','longitude','latitude')
+    list_display=('username','cluster_name','longitude','latitude','timestamp')
+    # 要搜索的列的值 
+    search_fields = ['username']
+    list_per_page = 20
+admin.site.register(gps_cluster,gps_clusterAdmin)
 

@@ -59,3 +59,10 @@ class CustomUser(AbstractUser):
         verbose_name="实验ID",
         default=-1,
     )
+
+class gps_cluster(models.Model):
+    username = models.CharField(max_length=10, verbose_name="用户名")
+    cluster_name = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)
+    timestamp = models.DateTimeField(auto_now=True, verbose_name="时间戳")
+    longitude = models.FloatField(default=0.0, verbose_name="经度")
+    latitude = models.FloatField(default=0.0, verbose_name="纬度")

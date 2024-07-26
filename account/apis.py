@@ -1,4 +1,4 @@
-from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser
+from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
 from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer
 from rest_framework.request import Request
@@ -37,13 +37,31 @@ class UpdateLocationApi(APIView):
         latitude_min = latitude - tolerance
         latitude_max = latitude + tolerance
 
-        # 检索误差范围内、用户名匹配并且label字段为空的坐标
-        nearby_locations_count = LocationInf.objects.filter(
+        # 检查gps_cluster表中的现有数据
+        cluster_exists = gps_cluster.objects.filter(
             Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
-            Q(latitude__gte=latitude_min, latitude__lte=latitude_max) &
-            Q(username=username) &
-            Q(label='')
-        ).count()
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+        ).exists()
+
+        flag = 0
+        if not cluster_exists:
+            # 检索误差范围内、用户名匹配并且label字段为空的坐标
+            nearby_locations_count = LocationInf.objects.filter(
+                Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
+                Q(latitude__gte=latitude_min, latitude__lte=latitude_max) &
+                Q(username=username) &
+                Q(label='')
+            ).count()
+
+            # 判断并设置flag
+            if nearby_locations_count >= min_times:
+                flag = 1
+                # 保存新的聚类信息
+                gps_cluster.objects.create(
+                    username=username,
+                    longitude=longitude,
+                    latitude=latitude
+                )
 
         # 保存新的位置信息
         LocationInf.objects.create(
@@ -53,9 +71,6 @@ class UpdateLocationApi(APIView):
             latitude=latitude,
             accuracy=accuracy
         )
-
-        # 判断并设置flag
-        flag = 1 if nearby_locations_count >= min_times else 0
 
         # 返回成功响应和flag
         return Response({
@@ -67,6 +82,7 @@ class UpdateLocationApi(APIView):
             "latitude_max": latitude_max
         })
     
+
 class updateLabelApi(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -86,16 +102,24 @@ class updateLabelApi(APIView):
         latitude_min = latitude - tolerance
         latitude_max = latitude + tolerance
 
-        # 更新符合条件的记录的 label 字段
-        updated_count = LocationInf.objects.filter(
+        # 更新符合条件的 LocationInf 记录的 label 字段
+        updated_location_count = LocationInf.objects.filter(
             Q(username=username) &
             Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
             Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
         ).update(label=label)
 
+        # 更新符合条件的 gps_cluster 记录的 cluster_name 字段
+        updated_cluster_count = gps_cluster.objects.filter(
+            Q(username=username) &
+            Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+        ).update(cluster_name=label)
+
         # 返回成功响应和更新的记录数量
-        return Response({"message": f"{updated_count} records updated successfully."}, status=status.HTTP_200_OK)
-    
+        return Response({
+            "message": f"{updated_location_count} LocationInf records and {updated_cluster_count} gps_cluster records updated successfully."
+        }, status=status.HTTP_200_OK)
 
 class UpdateBTApi(APIView):
     permission_classes = [IsAuthenticated]

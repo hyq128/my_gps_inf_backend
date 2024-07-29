@@ -99,18 +99,6 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=20,
         required=True
     )
-
-class get_GpsclusterSerializers(serializers.Serializer):
-    class Meta:
-        model = gps_cluster
-        fields = [
-            'username'
-            'cluster_name',
-            'latitude',
-            'longitude',
-            'timestamp',
-        ]
-
     def create(self, validated_data: dict) -> CustomUser:
         #密码单独拿出来，因为需要加密后才能存在数据库
         password = validated_data.pop("password")
@@ -120,6 +108,17 @@ class get_GpsclusterSerializers(serializers.Serializer):
         user.set_password(password)
         user.save()
         return user
+
+class get_GpsclusterSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = gps_cluster
+        fields = [
+            'username',
+            'cluster_name',
+            'latitude',
+            'longitude',
+            'timestamp',
+        ]
 
 class UserLoginSerializer(serializers.Serializer):
 

@@ -413,9 +413,11 @@ class get_gps_cluster(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request:Request) -> Response:
         username = request.user.username
-        if gps_cluster.objects.filter(username=username):
+        if gps_cluster.objects.filter(username=username)!=None:
             cluster = gps_cluster.objects.filter(username=username)
+            for obj in cluster:
+                print(obj.username, obj.cluster_name,obj.longitude, obj.latitude, obj.timestamp) 
             serializer = get_GpsclusterSerializers(cluster,many=True)
             return Response(serializer.data)
         else:
-            return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"The record does not exist"},status=status.HTTP_400_BAD_REQUEST)

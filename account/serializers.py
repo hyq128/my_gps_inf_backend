@@ -1,4 +1,4 @@
-from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser
+from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser,gps_cluster
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
@@ -99,6 +99,17 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=20,
         required=True
     )
+
+class get_GpsclusterSerializers(serializers.Serializer):
+    class Meta:
+        model = gps_cluster
+        fields = [
+            'username'
+            'cluster_name',
+            'latitude',
+            'longitude',
+            'timestamp',
+        ]
 
     def create(self, validated_data: dict) -> CustomUser:
         #密码单独拿出来，因为需要加密后才能存在数据库

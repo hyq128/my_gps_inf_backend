@@ -1,6 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer
+from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -408,3 +408,14 @@ class modifyNameApi(APIView):
             user.save()
             return Response("Name changed successfully")
         return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)
+
+class get_gps_cluster(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request:Request) -> Response:
+        username = request.user.username
+        if gps_cluster.objects.filter(username=username):
+            cluster = gps_cluster.objects.filter(username=username)
+            serializer = get_GpsclusterSerializers(cluster,many=True)
+            return Response(serializer.data)
+        else:
+            return Response({"The user name does not exist"},status=status.HTTP_400_BAD_REQUEST)

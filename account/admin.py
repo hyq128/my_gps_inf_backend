@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin
-from .models import CustomUser, LocationInf, AccelerometerInf, BlueToothInf, gps_cluster
+from .models import CustomUser, LocationInf, AccelerometerInf, BlueToothInf, gps_cluster,bt_cluster
 
 @admin.register(CustomUser)
 class CustomUserAdmin(DjangoUserAdmin):
@@ -77,3 +77,12 @@ class gps_clusterAdmin(admin.ModelAdmin):
     actions = ['delete_selected']  # Ensure bulk delete is enabled
 
 admin.site.register(gps_cluster, gps_clusterAdmin)
+
+
+class bt_clusterAdmin(admin.ModelAdmin):
+    fields = ('username', 'label', 'bt_device')
+    list_display = ('username', 'label','bt_device')
+    search_fields = ['username']
+    list_per_page = 20
+    actions = ['delete_selected']  # Ensure bulk delete is enabled
+admin.site.register(bt_cluster, bt_clusterAdmin)

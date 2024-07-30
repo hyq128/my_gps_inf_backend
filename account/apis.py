@@ -1,6 +1,6 @@
-from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster
+from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster,bt_cluster
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers
+from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers,UpdateBTLabelSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -123,18 +123,81 @@ class updateLabelApi(APIView):
 
 class UpdateBTApi(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self,request):
+
+    def post(self, request):
         username = request.user.username
         serializer = BlueToothSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         device = serializer.validated_data.get('device')
         connection_device = serializer.validated_data.get('connection_device')
 
-        BlueToothInf.objects.create(username=username, device=device, connection_device =connection_device)
-                # 返回成功响应
-        return Response({"message": "Data saved successfully."})
+        # 解析 connection_device 字段
+        devices = connection_device.split(';')
+        mac_counter = {}
+        results = []
 
+        # 统计 BlueToothInf 表中当前用户的 MAC 地址计数
+        all_user_records = BlueToothInf.objects.filter(username=username)
+        for record in all_user_records:
+            conn_devices = record.connection_device.split(';')
+            for conn_dev in conn_devices:
+                try:
+                    _, mac_addr = conn_dev.split(':', 1)
+                except ValueError:
+                    continue
+                if mac_addr in mac_counter:
+                    mac_counter[mac_addr] += 1
+                else:
+                    mac_counter[mac_addr] = 1
+
+        for dev in devices:
+            try:
+                name, mac = dev.split(':', 1)
+            except ValueError:
+                continue
+
+            # 检查是否在当前用户的 bt_cluster 中
+            if bt_cluster.objects.filter(username=username, bt_device__icontains=mac).exists():
+                results.append({'mac': mac, 'flag': 0})
+            else:
+                # 判断设备名称是否有效
+                if mac_counter.get(mac, 0) > 5 and name != "undefined":
+                    # 保存到 bt_cluster
+                    bt_cluster.objects.create(
+                        username=username,
+                        bt_device=f"{name}:{mac}"
+                    )
+                    important=f'{name}:{mac}'
+                    results.append({'important': important, 'flag': 1})
+                else:
+                    results.append({'mac': mac, 'flag': 0})
+
+        # 保存到 BlueToothInf 中
+        BlueToothInf.objects.create(username=username, device=device, connection_device=connection_device)
+
+        # 返回处理结果
+        return Response({"message": "Data saved successfully.", "results": results})
+
+class updateBTlabelApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        username = request.user.username
+        serializer = UpdateBTLabelSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        bt_device = serializer.validated_data['bt_device']
+        new_label = serializer.validated_data['label']
+
+        try:
+            # 查找对应的 bt_cluster 记录
+            bt_record = bt_cluster.objects.get(username=username, bt_device=bt_device)
+            # 更新标签
+            bt_record.label = new_label
+            bt_record.save()
+            return Response({"message": "Label updated successfully."})
+        except bt_cluster.DoesNotExist:
+            return Response({"error": f"No record found for the given MAC address and username.{username},{bt_device}"}, status=404)
 
 class UpdateACCApi(APIView):
     permission_classes = [IsAuthenticated]

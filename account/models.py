@@ -6,7 +6,7 @@ class LocationInf(models.Model):
     username = models.CharField(max_length=10, verbose_name="用户名")
     longitude = models.FloatField(default=0.0, verbose_name="经度")
     latitude = models.FloatField(default=0.0, verbose_name="纬度")
-    device = models.CharField(max_length=150, default="", verbose_name="设备")
+    device = models.CharField(max_length=150, default="", verbose_name="设备",blank=True,null=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
     accuracy = models.FloatField(default=0.0, verbose_name="精确范围")
     label = models.CharField(max_length=20, default="", verbose_name="用户标注")
@@ -14,7 +14,7 @@ class LocationInf(models.Model):
 class BlueToothInf(models.Model):
     username = models.CharField(max_length=10, verbose_name="用户名")
     connection_device = models.CharField(max_length=1500000, verbose_name="连接设备")
-    device = models.CharField(max_length=150, default="", verbose_name="设备")
+    device = models.CharField(max_length=150, default="", verbose_name="设备",blank=True,null=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
 
 class AccelerometerInf(models.Model):
@@ -22,7 +22,7 @@ class AccelerometerInf(models.Model):
     acc_x = models.FloatField(default=0.0, verbose_name="加速度X")
     acc_y = models.FloatField(default=0.0, verbose_name="加速度Y")
     acc_z = models.FloatField(default=0.0, verbose_name="加速度Z")
-    device = models.CharField(max_length=150, default="", verbose_name="设备")
+    device = models.CharField(max_length=150, default="", verbose_name="设备",null=True,blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
 
 class CustomUser(AbstractUser):
@@ -65,4 +65,10 @@ class gps_cluster(models.Model):
     cluster_name = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)
     timestamp = models.DateTimeField(auto_now=True, verbose_name="时间戳")
     longitude = models.FloatField(default=0.0, verbose_name="经度")
-    latitude = models.FloatField(default=0.0, verbose_name="纬度")
+    latitude = models.FloatField(default=0.0, verbose_name="纬度") 
+
+class bt_cluster(models.Model):
+    username = models.CharField(max_length=10, verbose_name="用户名")
+    label = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)
+    timestamp = models.DateTimeField(auto_now=True, verbose_name="时间戳")
+    bt_device = models.CharField(max_length=1500000, verbose_name="蓝牙连接设备")

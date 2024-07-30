@@ -7,5 +7,5 @@ urlpatterns = [
     path("sendRes/",SendResApi.as_view(),name="sendRes"),
     path("showQuestion/<int:survey_id>",ShowQuestionApi.as_view(),name="showQuestion"),
     path("submitQuestion/",submitQuestionApi.as_view(),name="submitQuestion"),
-
 ]
+ 

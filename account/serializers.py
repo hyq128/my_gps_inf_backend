@@ -1,4 +1,5 @@
 from .models import AccelerometerInf,LocationInf,BlueToothInf,CustomUser,gps_cluster
+from .models import bt_cluster
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
@@ -19,12 +20,9 @@ class LocationSerializer(serializers.ModelSerializer):
         required=True
     )
 
-    timestamp = serializers.DateTimeField(
-        required=False
-    )
     device = serializers.CharField(
         max_length=150,
-        required=True
+        required=False
     )
 
 class BlueToothSerializer(serializers.ModelSerializer):
@@ -39,9 +37,6 @@ class BlueToothSerializer(serializers.ModelSerializer):
 
     device = serializers.CharField(
         max_length=150,
-        required=True
-    )
-    timestamp = serializers.DateTimeField(
         required=False
     )
 
@@ -62,13 +57,9 @@ class AccSerializer(serializers.ModelSerializer):
     acc_z=serializers.FloatField(
         required=True
     )
-
-    timestamp = serializers.DateTimeField(
-        required=False
-    )    
     device = serializers.CharField(
         max_length=150,
-        required=True
+        required=False
     )
 
 class LabelSerializer(serializers.ModelSerializer):
@@ -81,8 +72,19 @@ class LabelSerializer(serializers.ModelSerializer):
     latitude = serializers.FloatField(required=True)
     label =  serializers.CharField(max_length=20, required=True)
 
-class UserSerializer(serializers.ModelSerializer):
+
+class UpdateBTLabelSerializer(serializers.Serializer):
     class Meta:
+        model = bt_cluster
+        fields = [
+            'bt_device',
+            'label',
+        ]
+    bt_device = serializers.CharField(max_length=17, required=True)
+    label = serializers.CharField(max_length=255, required=True)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:  
         model = CustomUser
         fields = [
             "username",

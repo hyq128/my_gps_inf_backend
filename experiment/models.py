@@ -10,3 +10,16 @@ class experiment(models.Model):
     bt_frequency = models.IntegerField(verbose_name="蓝牙调用频率(分钟)",default=-1)
     acc_frequency = models.IntegerField(verbose_name="加速度调用频率(秒)",default=-1)
     participants_name = models.CharField(max_length=64,verbose_name="实验参与者",default="",blank=True)
+    
+class exp_history(models.Model):
+    username = models.CharField(max_length=10, verbose_name="用户名")
+    exp_id = models.IntegerField(
+        verbose_name="实验ID",
+        primary_key=True,
+    )
+    exp_name = models.CharField(
+        max_length=64,
+        verbose_name="实验名称",
+        default="",
+        blank=True,
+    )

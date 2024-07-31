@@ -1,5 +1,5 @@
-from .models import experiment
-from .serializers import seeExperimentSerializer
+from .models import experiment,exp_history
+from .serializers import seeExperimentSerializer,exp_historySerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -25,6 +25,8 @@ class chooseExperimentApi(APIView):
         new_exp_name = request.data.get('exp_name')
         new_experiment = experiment.objects.get(exp_name=new_exp_name)
         new_exp_id = new_experiment.exp_id
+        username = user.username
+        exp_history.objects.create(exp_id=new_exp_id, exp_name=new_exp_name, username=username)
 
         # 找到用户当前参与的实验
         try:
@@ -82,3 +84,11 @@ class exitExperimentApi(APIView):
             return Response("You have successfully exited the experiment")
         else:
             return Response("You are not participating in the experiment or have quit")
+        
+class seeExperimentHistoryApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        exp_history_list = exp_history.objects.filter(username=username)
+        serializer = exp_historySerializer(exp_history_list, many=True)
+        return Response(serializer.data)

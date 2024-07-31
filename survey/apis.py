@@ -103,3 +103,11 @@ class SendResApi(APIView):
 #         {"question_id": 3, "answer_text": "5"}
 #     ]
 # }
+
+
+class getquestionsApi(APIView):
+    permission_classes = []
+    def get(self,request:Request) -> Response:
+        questions = Question.objects.all()
+        question_serializer = QuestionSerializer(questions,many=True)
+        return Response(question_serializer.data)

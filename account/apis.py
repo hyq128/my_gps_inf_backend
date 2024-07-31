@@ -479,8 +479,6 @@ class get_gps_cluster(APIView):
         username = request.user.username
         if gps_cluster.objects.filter(username=username)!=None:
             cluster = gps_cluster.objects.filter(username=username)
-            for obj in cluster:
-                print(obj.username, obj.cluster_name,obj.longitude, obj.latitude, obj.timestamp) 
             serializer = get_GpsclusterSerializers(cluster,many=True)
             return Response(serializer.data)
         else:

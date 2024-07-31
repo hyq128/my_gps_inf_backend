@@ -1,6 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster,bt_cluster
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers,UpdateBTLabelSerializer
+from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers,UpdateBTLabelSerializer,getBTlabelSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -483,3 +483,15 @@ class get_gps_cluster(APIView):
             return Response(serializer.data)
         else:
             return Response({"The record does not exist"},status=status.HTTP_400_BAD_REQUEST)
+        
+class getBTLabelApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        if bt_cluster.objects.filter(username=username).exists():
+            bt_inf = bt_cluster.objects.filter(username=username)
+            serializer = getBTlabelSerializer(bt_inf,many=True)
+            return Response(serializer.data)
+        else:
+            return Response({"The record does not exist"},status=status.HTTP_400_BAD_REQUEST)
+

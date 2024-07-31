@@ -225,3 +225,11 @@ class userInfoSerializer(serializers.ModelSerializer):
 #         token = super().get_token(user)
 #         token['username'] = user.name
 #         return token
+
+class getBTlabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = bt_cluster
+        fields = [
+            'bt_device',
+            'label',
+        ]

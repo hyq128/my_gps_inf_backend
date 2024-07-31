@@ -40,7 +40,8 @@ class UpdateLocationApi(APIView):
         # 检查gps_cluster表中的现有数据
         cluster_exists = gps_cluster.objects.filter(
             Q(longitude__gte=longitude_min, longitude__lte=longitude_max) &
-            Q(latitude__gte=latitude_min, latitude__lte=latitude_max)
+            Q(latitude__gte=latitude_min, latitude__lte=latitude_max) & 
+            Q(username = username)
         ).exists()
 
         flag = 0

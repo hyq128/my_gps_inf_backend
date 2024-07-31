@@ -159,7 +159,7 @@ class UpdateBTApi(APIView):
                 continue
 
             # 检查是否在当前用户的 bt_cluster 中
-            if bt_cluster.objects.filter(username=username, bt_device__icontains=mac).exists():
+            if bt_cluster.objects.filter(username=username, bt_device=f"{name}:{mac}").exists():
                 results.append({'mac': mac, 'flag': 0})
             else:
                 # 判断设备名称是否有效

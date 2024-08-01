@@ -15,7 +15,6 @@ class exp_history(models.Model):
     username = models.CharField(max_length=10, verbose_name="用户名")
     exp_id = models.IntegerField(
         verbose_name="实验ID",
-        primary_key=True,
     )
     exp_name = models.CharField(
         max_length=64,

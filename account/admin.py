@@ -75,7 +75,7 @@ class gps_clusterAdmin(admin.ModelAdmin):
     search_fields = ['username']
     list_per_page = 20
     actions = ['delete_selected']  # Ensure bulk delete is enabled
-
+    list_editable = ("cluster_name",)
 admin.site.register(gps_cluster, gps_clusterAdmin)
 
 
@@ -84,5 +84,6 @@ class bt_clusterAdmin(admin.ModelAdmin):
     list_display = ('username', 'label','bt_device')
     search_fields = ['username']
     list_per_page = 20
+    list_editable = ("label",)
     actions = ['delete_selected']  # Ensure bulk delete is enabled
 admin.site.register(bt_cluster, bt_clusterAdmin)

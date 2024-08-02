@@ -1,6 +1,9 @@
 from django.db import models
 # Create your models here.
 class experiment(models.Model):
+    class Meta:
+        verbose_name = '实验表'
+        verbose_name_plural = '实验表'
     start_time = models.DateTimeField(verbose_name="实验开始时间")
     end_time = models.DateTimeField(verbose_name="实验结束时间")
     exp_id = models.AutoField(primary_key=True ,verbose_name="实验ID")
@@ -12,6 +15,9 @@ class experiment(models.Model):
     participants_name = models.CharField(max_length=64,verbose_name="实验参与者",default="",blank=True)
     
 class exp_history(models.Model):
+    class Meta:
+        verbose_name = '实验历史表'
+        verbose_name_plural = '实验历史表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     exp_id = models.IntegerField(
         verbose_name="实验ID",

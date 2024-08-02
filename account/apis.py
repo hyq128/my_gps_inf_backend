@@ -14,6 +14,7 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.utils import timezone
 from base import email_inf
+from rest_framework.exceptions import ValidationError
 from django.db.models import Q
 
 class UpdateLocationApi(APIView):
@@ -128,7 +129,11 @@ class UpdateBTApi(APIView):
     def post(self, request):
         username = request.user.username
         serializer = BlueToothSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            # 这里处理数据验证错误，并返回状态码521
+            return Response({"message": "Data validation error."})
 
         device = serializer.validated_data.get('device')
         connection_device = serializer.validated_data.get('connection_device')

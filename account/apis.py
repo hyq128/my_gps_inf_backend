@@ -500,3 +500,27 @@ class getBTLabelApi(APIView):
         else:
             return Response({"The record does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
+class getGpsName(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request) -> Response:
+        username = request.user.username
+        latitude = float(request.data.get('latitude'))
+        longitude = float(request.data.get('longitude'))
+        error_margin = 0.001
+
+        # 查询符合条件的记录
+        clusters = gps_cluster.objects.filter(
+            username=username,
+            latitude__gte=latitude - error_margin,
+            latitude__lte=latitude + error_margin,
+            longitude__gte=longitude - error_margin,
+            longitude__lte=longitude + error_margin
+        ).exclude(cluster_name='')
+
+        # 如果有符合条件的记录，则返回 cluster_name
+        if clusters.exists():
+            cluster_names = clusters.values_list('cluster_name', flat=True)
+            return Response({"cluster_name": list(cluster_names)[0]}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)

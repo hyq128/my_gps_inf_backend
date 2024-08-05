@@ -9,4 +9,4 @@ class seeExperimentSerializer(serializers.ModelSerializer):
 class exp_historySerializer(serializers.ModelSerializer):
     class Meta:
         model=exp_history
-        fields = ['exp_id','exp_name','username']
+        fields = ['exp_id','exp_name','username','join_time','exit_time']

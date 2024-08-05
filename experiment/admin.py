@@ -13,7 +13,7 @@ admin.site.register(experiment,experimentAdmin)
 
 class exp_historyAdmin(admin.ModelAdmin):
     fields = ('exp_name','username')
-    list_display = ('exp_id','username','exp_name',)
+    list_display = ('exp_id','username','exp_name','join_time','exit_time')
     list_per_page = 10
     search_fields = ['exp_name']
     list_filter = ('exp_name',)

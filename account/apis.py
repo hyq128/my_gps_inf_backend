@@ -521,6 +521,8 @@ class getGpsName(APIView):
         # 如果有符合条件的记录，则返回 cluster_name
         if clusters.exists():
             cluster_names = clusters.values_list('cluster_name', flat=True)
-            return Response({"cluster_name": list(cluster_names)[0]}, status=status.HTTP_200_OK)
+            cluster_longitude=clusters.values_list('longitude', flat=True)
+            cluster_latitude=clusters.values_list('latitude', flat=True)
+            return Response({"cluster_name": list(cluster_names)[0],"longitude":list(cluster_longitude)[0],"latitude":list(cluster_latitude)[0]}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)

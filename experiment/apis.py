@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from account.models import CustomUser
+from django.utils import timezone
 
 class seeExperimentApi(APIView):
     permission_classes=[]
@@ -61,8 +62,8 @@ class myExperimentApi(APIView):
 
 class exitExperimentApi(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        # 获取当前用户信息
         user = request.user
         if not user.exp_id:
             return Response("You are not currently participating in any experiments")
@@ -80,13 +81,18 @@ class exitExperimentApi(APIView):
             participants.remove(user.username)
             exp.participants_name = ";".join(participants)
             exp.save()
+
+            # 更新实验历史记录的退出时间
+            exp_history.objects.filter(exp_id=user.exp_id, username=user.username, exit_time__isnull=True).update(exit_time=timezone.now())
+
             CustomUser.objects.filter(username=user.username).update(exp_id=-1, exp_name="", exp_state="inactive")
             return Response("You have successfully exited the experiment")
         else:
             return Response("You are not participating in the experiment or have quit")
-        
+
 class seeExperimentHistoryApi(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         username = request.user.username
         exp_history_list = exp_history.objects.filter(username=username)

@@ -1,0 +1,30 @@
+import logging
+import os
+
+class LogRequestMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+        # 设置日志文件路径，放在项目根目录下
+        project_root = '/home/xyc/snap/snapd-desktop-integration/83/桌面/deploy/gps_inf/'
+        log_file_path = os.path.join(project_root, 'request_log.log')
+
+        # 配置日志记录器
+        self.logger = logging.getLogger('RequestLogger')
+        handler = logging.FileHandler(log_file_path)
+        formatter = logging.Formatter('%(asctime)s - %(message)s')
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
+
+    def __call__(self, request):
+        # 记录请求体
+        body = request.body.decode('utf-8')
+        self.logger.info(f'Request Body: {body}')
+
+        # 记录请求头
+        headers = {k: v for k, v in request.META.items() if k.startswith('HTTP_')}
+        self.logger.info(f'Request Headers: {headers}')
+
+        response = self.get_response(request)
+        return response

@@ -1,6 +1,6 @@
 from .models import LocationInf,BlueToothInf,AccelerometerInf,CustomUser,gps_cluster,bt_cluster
 from .serializers import LocationSerializer,BlueToothSerializer,modifyPhoneSerializer,AccSerializer,modifyEmailSerializer,modifyPasswordSerializer,UserLoginSerializer,UserSerializer,IsPasswordSerializer,ResetSerializer,modifyNameSerializer
-from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers,UpdateBTLabelSerializer,getBTlabelSerializer
+from .serializers import modifyGenderSerializer,userInfoSerializer,LabelSerializer,get_GpsclusterSerializers,UpdateBTLabelSerializer,getBTlabelSerializer,CheckPhoneSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -312,7 +312,25 @@ class UserLoginApi(APIView):
             })
         else:
             return Response({"message": "User login failed, please check your account password"})
-        
+
+# 检查手机号码是否正确
+class checkphoneApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request):
+        serializer = CheckPhoneSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        phone_number = serializer.validated_data["phone_number"]
+        username = request.user.username
+
+        try:
+            user = get_user_model().objects.get(phone_number=phone_number, username=username)
+            return Response("Accept", status=status.HTTP_200_OK)
+        except get_user_model().DoesNotExist:
+            return Response("手机号码不存在", status=status.HTTP_400_BAD_REQUEST)
+
+
+
 # 令牌发送api 通用api
 class Is_PasswordApi(APIView):
     permission_classes = []

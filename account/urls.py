@@ -2,7 +2,7 @@ from django.urls import path
 from .apis import UpdateLocationApi,UpdateBTApi,UpdateACCApi,UserRegisterApi,UserLoginApi,GetACCData,GetBTData,GetGPSData
 from .apis import modifyPasswordApi,modifyEmailApi,modifyPhoneApi,modifyGenderApi,modifyNameApi,getUserInfoApi
 from .apis import Is_PasswordApi,ResetPasswordApi,updateLabelApi,get_gps_cluster,updateBTlabelApi,getBTLabelApi
-from .apis import  getGpsName
+from .apis import  getGpsName,checkphoneApi
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -35,4 +35,5 @@ urlpatterns = [
     path("updateBTlabel/",updateBTlabelApi.as_view(),name="updateBTlabel"),
     path("getBTLabel/",getBTLabelApi.as_view(),name="getBTLabel"),
     path("getGpsName/",getGpsName.as_view(),name="getGpsName"),
+    path("checkphone/",checkphoneApi.as_view(),name="checkphone"),
 ]

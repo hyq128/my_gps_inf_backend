@@ -233,3 +233,14 @@ class getBTlabelSerializer(serializers.ModelSerializer):
             'bt_device',
             'label',
         ]
+
+class CheckPhoneSerializer(serializers.Serializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'phone_number',
+        ]
+    phone_number= serializers.CharField(
+        max_length=11,
+        required=True
+    )

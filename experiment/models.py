@@ -2,7 +2,7 @@ from django.db import models
 
 class experiment(models.Model):
     class Meta:
-        verbose_name = '实验表'
+        verbose_name = '实验'
         verbose_name_plural = '实验表'
     start_time = models.DateTimeField(verbose_name="实验开始时间")
     end_time = models.DateTimeField(verbose_name="实验结束时间")
@@ -16,7 +16,7 @@ class experiment(models.Model):
 
 class exp_history(models.Model):
     class Meta:
-        verbose_name = '实验历史表'
+        verbose_name = '实验历史'
         verbose_name_plural = '实验历史表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     exp_id = models.IntegerField(verbose_name="实验ID")

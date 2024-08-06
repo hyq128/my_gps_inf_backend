@@ -4,7 +4,7 @@ from django.utils import timezone
 
 class LocationInf(models.Model):
     class Meta:
-        verbose_name = '定位表'
+        verbose_name = '定位记录'
         verbose_name_plural = '定位表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     longitude = models.FloatField(default=0.0, verbose_name="经度")
@@ -16,7 +16,7 @@ class LocationInf(models.Model):
 
 class BlueToothInf(models.Model):
     class Meta:
-        verbose_name = '蓝牙表'
+        verbose_name = '蓝牙记录'
         verbose_name_plural = '蓝牙表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     connection_device = models.CharField(max_length=1500000, verbose_name="连接设备")
@@ -36,7 +36,7 @@ class AccelerometerInf(models.Model):
 
 class CustomUser(AbstractUser):
     class Meta:
-        verbose_name = '用户管理表'
+        verbose_name = '用户'
         verbose_name_plural = '用户管理表'
     email = models.EmailField(verbose_name="邮箱地址")
     device = models.CharField(max_length=150, default="", verbose_name="设备及其操作系统", blank=True)
@@ -71,7 +71,7 @@ class CustomUser(AbstractUser):
 
 class gps_cluster(models.Model):
     class Meta:
-        verbose_name = '定位聚类表'
+        verbose_name = '定位聚类'
         verbose_name_plural = '定位聚类表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     cluster_name = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)
@@ -81,7 +81,7 @@ class gps_cluster(models.Model):
 
 class bt_cluster(models.Model):
     class Meta:
-        verbose_name = '蓝牙聚类表'
+        verbose_name = '蓝牙聚类'
         verbose_name_plural = '蓝牙聚类表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     label = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)

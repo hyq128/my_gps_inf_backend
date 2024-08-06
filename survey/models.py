@@ -18,6 +18,7 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200,verbose_name="问题文本")
     question_type = models.CharField(max_length=20, choices=[('text', 'Text'), ('choice', 'Choice'), ('rating', 'Rating')],verbose_name="问题类型")
     choices = models.TextField(null=True, blank=True,verbose_name="选择项")
+    question_group = models.CharField(max_length=200,verbose_name="问题分组")
 
 class Answer(models.Model):
     class Meta:

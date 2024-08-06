@@ -1,12 +1,11 @@
 import logging
 import os
-
+from pathlib import Path
 class LogRequestMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
         # 设置日志文件路径，放在项目根目录下
-        project_root = '/home/xyc/snap/snapd-desktop-integration/83/桌面/deploy/gps_inf/'
+        project_root = Path(__file__).resolve().parent
         log_file_path = os.path.join(project_root, 'request_log.log')
 
         # 配置日志记录器

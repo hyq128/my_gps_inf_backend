@@ -27,7 +27,7 @@ class chooseExperimentApi(APIView):
         new_experiment = experiment.objects.get(exp_name=new_exp_name)
         new_exp_id = new_experiment.exp_id
         username = user.username
-        exp_history.objects.create(exp_id=new_exp_id, exp_name=new_exp_name, username=username)
+        exp_history.objects.create(exp_id=new_exp_id, exp_name=new_exp_name, username=username,description=description)
 
         # 找到用户当前参与的实验
         try:

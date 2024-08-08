@@ -21,5 +21,6 @@ class exp_history(models.Model):
     username = models.CharField(max_length=10, verbose_name="用户名")
     exp_id = models.IntegerField(verbose_name="实验ID")
     exp_name = models.CharField(max_length=64, verbose_name="实验名称", default="", blank=True)
+    description = models.CharField(max_length=255, verbose_name="实验描述", default="")
     join_time = models.DateTimeField(verbose_name="参加时间", auto_now_add=True)
     exit_time = models.DateTimeField(verbose_name="退出时间", null=True, blank=True)

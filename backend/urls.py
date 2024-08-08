@@ -23,4 +23,6 @@ urlpatterns = [
     path('api/', include('account.urls'), name='account'),  
     path('survey/', include('survey.urls'), name='survery'),
     path('exp/', include('experiment.urls'), name='experiment'),
+    path('sensor/', include('sensor.urls'), name='sensor'),  
+    path('analysis/', include('analysis.urls'), name='analysis'),  
 ]

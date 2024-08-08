@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin
-from .models import CustomUser, LocationInf, AccelerometerInf, BlueToothInf, gps_cluster,bt_cluster
+from .models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(DjangoUserAdmin):
@@ -41,49 +41,3 @@ class MyGroupAdmin(DjangoGroupAdmin):
     actions = ['delete_selected']  # Ensure bulk delete is enabled
 
 admin.site.unregister(Group)  # Avoid multiple GroupAdmin
-
-class LocationAdmin(admin.ModelAdmin):
-    fields = ('username', 'device', 'longitude', 'latitude', 'accuracy')
-    list_display = ('username', 'device', 'longitude', 'latitude', 'accuracy', 'timestamp', 'label')
-    search_fields = ['username']
-    list_per_page = 20
-    actions = ['delete_selected']  # Ensure bulk delete is enabled
-
-admin.site.register(LocationInf, LocationAdmin)
-
-class BlueToothAdmin(admin.ModelAdmin):
-    fields = ('username', 'device', 'connection_device')
-    list_display = ('username', 'device', 'connection_device', 'timestamp')
-    search_fields = ['username']
-    list_per_page = 6
-    actions = ['delete_selected']  # Ensure bulk delete is enabled
-
-admin.site.register(BlueToothInf, BlueToothAdmin)
-
-class AccelerometerAdmin(admin.ModelAdmin):
-    fields = ('username', 'device', 'acc_x', 'acc_y', 'acc_z')
-    list_display = ('username', 'device', 'acc_x', 'acc_y', 'acc_z', 'timestamp')
-    search_fields = ['username']
-    list_per_page = 20
-    actions = ['delete_selected']  # Ensure bulk delete is enabled
-
-admin.site.register(AccelerometerInf, AccelerometerAdmin)
-
-class gps_clusterAdmin(admin.ModelAdmin):
-    fields = ('username', 'cluster_name', 'longitude', 'latitude')
-    list_display = ('username', 'cluster_name', 'longitude', 'latitude', 'timestamp')
-    search_fields = ['username']
-    list_per_page = 20
-    actions = ['delete_selected']  # Ensure bulk delete is enabled
-    list_editable = ("cluster_name",)
-admin.site.register(gps_cluster, gps_clusterAdmin)
-
-
-class bt_clusterAdmin(admin.ModelAdmin):
-    fields = ('username', 'label', 'bt_device')
-    list_display = ('username', 'label','bt_device')
-    search_fields = ['username']
-    list_per_page = 20
-    list_editable = ("label",)
-    actions = ['delete_selected']  # Ensure bulk delete is enabled
-admin.site.register(bt_cluster, bt_clusterAdmin)

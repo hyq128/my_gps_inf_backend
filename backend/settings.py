@@ -40,6 +40,8 @@ APPS = [
     "account",   
     "survey",
     "experiment",
+    "sensor",
+    "analysis",
 ]
 
 LOCAL_APPS = [

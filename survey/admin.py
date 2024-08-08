@@ -3,12 +3,12 @@ from .models import Question, Survey, Answer
 
 # 注册Question模型的管理员界面
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ('question_text', 'question_type', 'choices')
-    list_display = ('question_id', 'question_text', 'question_type', 'choices')
+    fields = ('question_text','question_group', 'question_type', 'choices')
+    list_display = ('question_id','question_group', 'question_text', 'question_type', 'choices')
     list_per_page = 10
     search_fields = ['question_id']
     list_filter = ('question_id',)
-    list_editable = ('question_text', 'question_type', 'choices')
+    list_editable = ('question_text', 'question_type', 'question_group','choices')
 admin.site.register(Question, QuestionAdmin)
 
 # 注册Survey模型的管理员界面

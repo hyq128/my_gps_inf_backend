@@ -12,9 +12,10 @@ class SurveySerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['question_id', 'question_text', 'question_type', 'choices']
+        fields = ['question_id', 'question_text', 'question_type', 'question_group','choices']
     question_text = serializers.CharField(max_length=200)
     question_type = serializers.CharField(max_length=20)
+    question_group = serializers.CharField(max_length=200)
     
 
 class AnswerSerializer(serializers.ModelSerializer):

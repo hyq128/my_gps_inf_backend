@@ -3,7 +3,7 @@ from .models import  gps_cluster,bt_cluster
 
 class gps_clusterAdmin(admin.ModelAdmin):
     fields = ('username', 'cluster_name', 'longitude', 'latitude')
-    list_display = ('username', 'cluster_name', 'longitude', 'latitude', 'timestamp')
+    list_display = ('username', 'cluster_name', 'longitude', 'latitude','label', 'timestamp')
     search_fields = ['username']
     list_per_page = 20
     actions = ['delete_selected']  # Ensure bulk delete is enabled

@@ -6,6 +6,7 @@ class gps_cluster(models.Model):
         verbose_name_plural = '定位聚类表'
     username = models.CharField(max_length=10, verbose_name="用户名")
     cluster_name = models.CharField(max_length=10, verbose_name="聚类名称",blank=True)
+    label = models.IntegerField(blank=True,null=True, verbose_name="聚类标签")
     timestamp = models.DateTimeField(auto_now=True, verbose_name="时间戳")
     longitude = models.FloatField(default=0.0, verbose_name="经度")
     latitude = models.FloatField(default=0.0, verbose_name="纬度") 

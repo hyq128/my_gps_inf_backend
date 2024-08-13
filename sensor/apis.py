@@ -223,7 +223,7 @@ class GetGyroData(APIView):
         if username:
             # 获取与设备相关的加速计信息
             gyro= GyroInf.objects.filter(username=username)
-            gyro_serializer = AccSerializer(gyro, many=True)
+            gyro_serializer = GyroSerializer(gyro, many=True)
             # 返回数据
             return Response({
                 'username':username,

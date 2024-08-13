@@ -4,7 +4,7 @@ from rest_framework import serializers
 class seeExperimentSerializer(serializers.ModelSerializer):
     class Meta:
         model=experiment
-        fields = ['exp_name','description','start_time','end_time','gps_frequency','acc_frequency','bt_frequency']
+        fields = ['exp_name','description','start_time','end_time','gps_frequency','acc_frequency','bt_frequency','gyro_frequency']
 
 class exp_historySerializer(serializers.ModelSerializer):
     class Meta:

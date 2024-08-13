@@ -32,3 +32,14 @@ class AccelerometerInf(models.Model):
     device = models.CharField(max_length=150, default="", verbose_name="设备",null=True,blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
 
+class GyroInf(models.Model):
+    class Meta:
+        verbose_name = '陀螺仪计'
+        verbose_name_plural = '陀螺仪表'
+    username = models.CharField(max_length=10, verbose_name="用户名")
+    x = models.FloatField(default=0.0, verbose_name="X轴")
+    y = models.FloatField(default=0.0, verbose_name="Y轴")
+    z = models.FloatField(default=0.0, verbose_name="Z轴")
+    device = models.CharField(max_length=150, default="", verbose_name="设备",null=True,blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
+

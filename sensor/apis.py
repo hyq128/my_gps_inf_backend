@@ -1,5 +1,5 @@
-from .models import LocationInf,BlueToothInf,AccelerometerInf
-from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer
+from .models import LocationInf,BlueToothInf,AccelerometerInf,GyroInf
+from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,GyroSerializer
 from analysis.models import gps_cluster,bt_cluster
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -200,5 +200,34 @@ class GetBTData(APIView):
         else:
             return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
 
-
+class UpdateGyroApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request):
+        username = request.user.username
+        serializer = GyroSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         
+        device = serializer.validated_data.get('device')
+        x = serializer.validated_data.get('x')
+        y = serializer.validated_data.get('y')
+        z = serializer.validated_data.get('z')
+
+        GyroInf.objects.create(username=username,device=device, y=y,x=x,z=z)
+                # 返回成功响应
+        return Response({"message": "Data saved successfully."})
+    
+class GetGyroData(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        if username:
+            # 获取与设备相关的加速计信息
+            gyro= GyroInf.objects.filter(username=username)
+            gyro_serializer = AccSerializer(gyro, many=True)
+            # 返回数据
+            return Response({
+                'username':username,
+                'accelerometers': gyro_serializer.data,
+            })
+        else:
+            return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)

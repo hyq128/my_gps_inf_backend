@@ -181,7 +181,7 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 STATIC_ROOT = '/var/www/gps_inf/static'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'None'
-
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", None)   #发送邮件的邮箱密码(这里使用的是授权码)
 # django内部日志设置
 BASE_LOG_DIR = os.path.join(BASE_DIR, "logs")
 

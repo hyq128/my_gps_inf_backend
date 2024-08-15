@@ -11,16 +11,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
 import os 
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+dotenv.load_dotenv(dotenv_path=BASE_DIR.parent / ".env", verbose=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3muio4&!2x91*a1eds5k2w@u%=r*7pzm3o6c62$+&z^h+=l=&a'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-k4^s#n*^xq7*fp((*7*(kt@1-s4h46jq3wib-v(pil!a2l2)#1'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -110,17 +114,23 @@ if DEBUG:
         }
     }
 else:
+    DB_NAME = os.environ.get("DB_NAME", None)
+    DB_USER = os.environ.get("DB_USER", None)
+    DB_PSWD = os.environ.get("DB_PSWD", None)
+    DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
+    DB_PORT = os.environ.get("DB_PORT", "5432")
+    if not DB_NAME or not DB_USER or not DB_PSWD:
+        raise Exception("DB_NAME, DB_USER, DB_PSWD not found in .env file")
     DATABASES = {
         'default': {
             'ENGINE': "django.db.backends.postgresql",
-            'NAME': 'gps',
-            'USER': 'gps',
-            'PASSWORD': 'gps',
-            'HOST': '127.0.0.1',
-            'PORT': 5432,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PSWD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -169,7 +179,7 @@ from base.simplejwt import *
 from base.email_inf import *
 AUTH_USER_MODEL = 'account.CustomUser'
 
-STATIC_ROOT = '/home/xyc/snap/snapd-desktop-integration/83/桌面/deploy/gps_inf/static'
+STATIC_ROOT = '/var/www/gps_inf/static'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'None'
 
 # django内部日志设置
@@ -205,7 +215,7 @@ LOGGING = {
         'default': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_LOG_DIR, "django-sso.info.log"),
+            'filename': os.path.join(BASE_LOG_DIR, "django.info.log"),
             'maxBytes': 1024 * 1024 * 50,
             'backupCount': 3,
             'formatter': 'standard',
@@ -214,7 +224,7 @@ LOGGING = {
         'error': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_LOG_DIR, "django-sso.error.log"),
+            'filename': os.path.join(BASE_LOG_DIR, "django.error.log"),
             'maxBytes': 1024 * 1024 * 50,
             'backupCount': 5,
             'formatter': 'standard',
@@ -223,7 +233,7 @@ LOGGING = {
         'collect': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_LOG_DIR, "django-sso.collect.log"),
+            'filename': os.path.join(BASE_LOG_DIR, "django.collect.log"),
             'maxBytes': 1024 * 1024 * 50,
             'backupCount': 5,
             'formatter': 'collect',

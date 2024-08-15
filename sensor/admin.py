@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import LocationInf, AccelerometerInf, BlueToothInf,GyroInf
+from .models import LocationInf, AccelerometerInf, BlueToothInf,GyroInf,BatteryInf
 
 class LocationAdmin(admin.ModelAdmin):
     fields = ('username', 'device', 'longitude', 'latitude', 'accuracy')
@@ -37,3 +37,11 @@ class GyroAdmin(admin.ModelAdmin):
     actions = ['delete_selected']  # Ensure bulk delete is enabled
 
 admin.site.register(GyroInf, GyroAdmin)
+
+class BatteryAdmin(admin.ModelAdmin):
+    fields = ('username', 'device', 'battery_level', 'battery_status')
+    list_display = ('username', 'device', 'battery_level', 'battery_status', 'timestamp')
+    search_fields = ['username']
+    list_per_page = 20
+    actions = ['delete_selected']  # Ensure bulk delete is enabled
+admin.site.register(BatteryInf, BatteryAdmin)

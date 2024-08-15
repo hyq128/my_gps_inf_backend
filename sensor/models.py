@@ -43,3 +43,12 @@ class GyroInf(models.Model):
     device = models.CharField(max_length=150, default="", verbose_name="设备",null=True,blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")
 
+class BatteryInf(models.Model):
+    class Meta:
+        verbose_name = '电池信息'
+        verbose_name_plural = '电池信息表'
+    username = models.CharField(max_length=10, verbose_name="用户名")
+    battery_level = models.FloatField(default=0.0, verbose_name="电池电量")
+    battery_status = models.CharField(max_length=150, default="", verbose_name="电池状态")
+    device = models.CharField(max_length=150, default="", verbose_name="设备",null=True,blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="时间戳")

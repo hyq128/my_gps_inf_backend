@@ -1,4 +1,4 @@
-from .models import AccelerometerInf,LocationInf,BlueToothInf,GyroInf
+from .models import AccelerometerInf,LocationInf,BlueToothInf,GyroInf,BatteryInf
 from rest_framework import serializers
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -62,7 +62,7 @@ class AccSerializer(serializers.ModelSerializer):
 
 class GyroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AccelerometerInf
+        model = GyroInf
         fields = ['x', 'y','z','timestamp','device']
     
     x=serializers.FloatField(
@@ -81,5 +81,18 @@ class GyroSerializer(serializers.ModelSerializer):
         required=False
     )
 
-
+class BatterySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BatteryInf
+        fields = ['battery_level', 'battery_status','timestamp','device']
+    
+    battery_level=serializers.FloatField(
+        required=True
+    )
+    
+    battery_status=serializers.CharField(
+        max_length=150,
+        required=True
+    )
+    device= serializers.CharField(required=False)
 

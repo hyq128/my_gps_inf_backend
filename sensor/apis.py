@@ -1,5 +1,5 @@
-from .models import LocationInf,BlueToothInf,AccelerometerInf,GyroInf
-from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,GyroSerializer
+from .models import LocationInf,BlueToothInf,AccelerometerInf,GyroInf,BatteryInf
+from .serializers import LocationSerializer,BlueToothSerializer,AccSerializer,GyroSerializer,BatterySerializer
 from analysis.models import gps_cluster,bt_cluster
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -216,6 +216,43 @@ class UpdateGyroApi(APIView):
                 # 返回成功响应
         return Response({"message": "Data saved successfully."})
     
+class updateBatteryApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        username = request.user.username
+        serializer = BatterySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # 获取验证后的数据
+        device = serializer.validated_data.get('device')
+        battery_level = serializer.validated_data.get('battery_level')
+        battery_status = serializer.validated_data.get('battery_status')
+        
+        # 如果设备为空，将其设置为空字符串
+        if not device:
+            device = ""
+
+        # 保存电池信息
+        BatteryInf.objects.create(username=username, device=device, battery_level=battery_level, battery_status=battery_status)
+        
+        return Response({"message": "Data saved successfully."})
+
+class GetBatteryData(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        username = request.user.username
+        if username:
+            Battery= BatteryInf.objects.filter(username=username)
+            Battery_serializer = BatterySerializer(Battery, many=True)
+            # 返回数据
+            return Response({
+                'username':username,
+                'Battery': Battery_serializer.data,
+            })
+        else:
+            return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)
+
 class GetGyroData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):

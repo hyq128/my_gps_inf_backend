@@ -227,7 +227,7 @@ class GetGyroData(APIView):
             # 返回数据
             return Response({
                 'username':username,
-                'accelerometers': gyro_serializer.data,
+                'gyro': gyro_serializer.data,
             })
         else:
             return Response({'message': 'Please log in first'}, status=status.HTTP_400_BAD_REQUEST)

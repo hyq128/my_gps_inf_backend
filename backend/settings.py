@@ -45,6 +45,7 @@ APPS = [
     "experiment",
     "sensor",
     "analysis",
+    "pose",
 ]
 
 LOCAL_APPS = [
@@ -79,7 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'base.LogRequestMiddleware.LogRequestMiddleware'
+    # 'base.LogRequestMiddleware.LogRequestMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -181,6 +182,10 @@ AUTH_USER_MODEL = 'account.CustomUser'
 
 STATIC_ROOT = '/var/www/gps_inf/static'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'None'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", None)   #发送邮件的邮箱密码(这里使用的是授权码)
 # django内部日志设置
 BASE_LOG_DIR = os.path.join(BASE_DIR, "logs")
